@@ -1,9 +1,7 @@
-package org.usfirst.frc.team114.lib;
+package org.usfirst.frc.team114.lib.subsystem;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import org.usfirst.frc.team114.subsystems.Subsystem;
-import org.usfirst.frc.team114.settings.SubsystemSettings;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +11,11 @@ import java.util.List;
  * @see Subsystem
  */
 public class SubsystemManager {
+    /**
+     * Time between subsystem steps in seconds (currently {@value}).
+     */
+    public static final double STEP_PERIOD = 0.005; //200 times a second
+
     private final List<Subsystem> subsystems;
     private final Notifier notifier = new Notifier(this::step);
 
@@ -48,13 +51,13 @@ public class SubsystemManager {
      * {@link #stop()} is called.
      *
      * <p>This function tells a notifier to trigger every
-     * {@link SubsystemSettings#STEP_PERIOD} seconds, calling the step method of each
+     * {@link SubsystemManager#STEP_PERIOD} seconds, calling the step method of each
      * subsystem.</p>
 
      */
     public void start() {
         subsystems.forEach(subsystem -> subsystem.onStart(timestamp()));
-        notifier.startPeriodic(SubsystemSettings.STEP_PERIOD);
+        notifier.startPeriodic(SubsystemManager.STEP_PERIOD);
     }
 
     /**
