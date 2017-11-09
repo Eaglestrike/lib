@@ -1,4 +1,4 @@
-package org.usfirst.frc.team114.lib.subsystem;
+package org.team114.lib.subsystem;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team114.lib.subsystem;
+package org.team114.lib.subsystem;
 
 /**
  * Interface which must be implemented by all subsystems.

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team114.lib.util;
+package org.team114.lib.util;
 
 import java.util.concurrent.Callable;
 
@@ -12,6 +12,18 @@ public class EdgeDetector {
 
     public EdgeDetector(Callable<Boolean> lambda) {
         this.lambda = lambda;
+    }
+
+    /*
+     * Updates the latest known value by calling the lambda.
+     */
+    public boolean update() {
+        try {
+            lastValue = lambda.call();
+        } catch (Exception e) {
+            lastValue = false;
+        }
+        return lastValue;
     }
 
     public EdgeType getEdge() {
