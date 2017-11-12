@@ -1,13 +1,13 @@
 package org.usfirst.frc.team114.lib.auto.actions;
 
-import org.usfirst.frc.team114.lib.auto.ActionBase;
+import org.usfirst.frc.team114.lib.auto.Action;
 
 /**
  * Wraps a runnable, turning it into an action.&nbsp;This should only be used if it's absolutely needed, because
  * a new action class is more reusable. An example of a case when this action is appropriate is for on-the-fly testing,
  * where the flexibility of a runnable lambda allows for quick diagnosis.
  */
-public class RunnerAction extends ActionBase {
+public class RunnerAction extends Action {
 
     private Runnable runnable;
 

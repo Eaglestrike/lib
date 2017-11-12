@@ -1,6 +1,6 @@
 package org.usfirst.frc.team114.lib.auto.actions;
 
-import org.usfirst.frc.team114.lib.auto.ActionBase;
+import org.usfirst.frc.team114.lib.auto.Action;
 import org.usfirst.frc.team114.lib.auto.CompositeAction;
 
 import java.util.concurrent.ExecutorService;
@@ -21,7 +21,7 @@ public class ParallelAction extends CompositeAction {
      */
     @Override
     public void run() {
-        for (ActionBase action : actions) {
+        for (Action action : actions) {
             executor.execute(action);
         }
         try {

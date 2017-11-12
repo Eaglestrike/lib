@@ -16,7 +16,7 @@ package org.usfirst.frc.team114.lib.auto;
  * simple way.</p>
  *
  */
-public abstract class ActionBase implements Runnable {
+public abstract class Action implements Runnable {
     /**
      * Run this action.
      */

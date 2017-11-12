@@ -10,18 +10,18 @@ import java.util.List;
  * executing actions in a different order (e.g. {@link org.usfirst.frc.team114.lib.auto.actions.ParallelAction})
  * or some form of conditional execution.
  */
-public abstract class CompositeAction extends ActionBase {
+public abstract class CompositeAction extends Action {
     /**
      * A list of actions input when the class is constructed. The use of this list is defined
      * by the subclass, but they will ordinarily be executed.
      */
-    protected List<ActionBase> actions;
+    protected List<Action> actions;
 
     /**
      * Create a new instance of this class from a list of actions.
      * @param actions a list of the action to be executed
      */
-    public CompositeAction(List<ActionBase> actions) {
+    public CompositeAction(List<Action> actions) {
 
         this.actions = actions;
     }
@@ -30,7 +30,7 @@ public abstract class CompositeAction extends ActionBase {
      * Create a new instance of this class from actions given as parameters, using a variadic constructor.
      * @param actions the actions to be executed
      */
-    public CompositeAction(ActionBase... actions) {
+    public CompositeAction(Action... actions) {
         this(Arrays.asList(actions));
     }
 

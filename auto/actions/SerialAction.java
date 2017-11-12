@@ -1,6 +1,6 @@
 package org.usfirst.frc.team114.lib.auto.actions;
 
-import org.usfirst.frc.team114.lib.auto.ActionBase;
+import org.usfirst.frc.team114.lib.auto.Action;
 import org.usfirst.frc.team114.lib.auto.CompositeAction;
 
 /**
@@ -15,7 +15,7 @@ public class SerialAction extends CompositeAction {
      */
     @Override
     public void run() {
-        for (ActionBase action: actions) {
+        for (Action action: actions) {
              action.run();
         }
     }
