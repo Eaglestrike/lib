@@ -1,4 +1,4 @@
-package org.usfirst.frc.team114.lib.auto;
+package org.team114.lib.auto;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Represents any action that is built from component actions. This action will probably execute at least some
  * of the component actions, but the manner in which it does so is implementation defined. Example use cases include
- * executing actions in a different order (e.g. {@link org.usfirst.frc.team114.lib.auto.actions.ParallelAction})
+ * executing actions in a different order (e.g. {@link org.team114.lib.auto.actions.ParallelAction})
  * or some form of conditional execution.
  */
 public abstract class CompositeAction extends Action {

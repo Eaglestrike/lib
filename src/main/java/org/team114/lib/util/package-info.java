@@ -1,4 +1,4 @@
 /**
  * Package containing miscellaneous general utilities.
  */
-package org.usfirst.frc.team114.lib.util;
+package org.team114.lib.util;

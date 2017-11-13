@@ -1,6 +1,5 @@
 package org.team114.lib.util;
 
-import static org.mockito.Mockito.*;
 import org.junit.*;
 
 public class EdgeDetectorTest  {

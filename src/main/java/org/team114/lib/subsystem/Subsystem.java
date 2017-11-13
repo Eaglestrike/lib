@@ -21,7 +21,7 @@ public interface Subsystem {
 
     /**
      * Runs every time the subsystem steps (that is, every
-     * {@link org.usfirst.frc.team114.lib.subsystem.SubsystemManager#STEP_PERIOD} seconds). This method should work
+     * {@link org.team114.lib.subsystem.SubsystemManager#STEP_PERIOD} seconds). This method should work
      * towards accomplishing the goal set by the current control class.
      * @param timestamp the current uptime
      */

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team114.lib.auto;
+package org.team114.lib.auto;
 
 /**
  * Abstract base class for actions.

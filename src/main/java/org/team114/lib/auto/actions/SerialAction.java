@@ -1,7 +1,7 @@
-package org.usfirst.frc.team114.lib.auto.actions;
+package org.team114.lib.auto.actions;
 
-import org.usfirst.frc.team114.lib.auto.Action;
-import org.usfirst.frc.team114.lib.auto.CompositeAction;
+import org.team114.lib.auto.Action;
+import org.team114.lib.auto.CompositeAction;
 
 /**
  * An action that runs actions in sequence. This is useful if several actions need to be run where one only
