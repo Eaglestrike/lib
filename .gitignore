@@ -9,3 +9,9 @@ gradle
 *.iws
 /out/
 .idea
+
+# Eclipse
+/bin
+/.settings
+.classpath
+.project
