@@ -9,3 +9,6 @@ gradle
 *.iws
 /out/
 .idea
+
+# OS Specific
+.DS_Store
