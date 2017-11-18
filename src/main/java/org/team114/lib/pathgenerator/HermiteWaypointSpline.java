@@ -1,7 +1,7 @@
 package org.team114.lib.pathgenerator;
+
 import java.util.List;
 import java.util.ArrayList;
-
 import org.ejml.simple.SimpleMatrix;
 
 
@@ -19,8 +19,9 @@ public class HermiteWaypointSpline {
     private final List<Waypoint> pointList = new ArrayList<>();
 
     /** Generic multiplier for Hermite splines which is needed to find the solution. */
-    private static final SimpleMatrix multBase = new SimpleMatrix(new double[][] {{1, 0, 0, 0},
-      {1, 1, 1, 1}, {0, 1, 0, 0}, {0, 1, 2, 3}}).invert();
+    private static final SimpleMatrix multBase =
+            new SimpleMatrix(new double[][] {{1, 0, 0, 0}, {1, 1, 1, 1}, {0, 1, 0, 0}, {0, 1, 2, 3}})
+                    .invert();
 
     private boolean safeReturn = false;
     /**
@@ -49,14 +50,13 @@ public class HermiteWaypointSpline {
         if (t < 0 || t > splineSections.size())
             if (safeReturn) {
                 t = t < 0 ? 0 : splineSections.size();
-            }
-            else 
-                return null;
+            } else return null;
 
         int index = (int) t;
         t -= (int) t;
         SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 1, t, t * t, t * t * t }})
-                .mult(splineSections.get(index));
+                        .mult(splineSections.get(index));
+
         return new double[] { solution.get(0, 0), solution.get(0, 1)};
     }
 
@@ -74,8 +74,7 @@ public class HermiteWaypointSpline {
         if (t < 0 || t > splineSections.size())
             if (safeReturn) {
                 t = t < 0 ? 0 : splineSections.size();
-            }
-            else return Double.NaN;
+            } else return Double.NaN;
         int index = (int) t;
         t -= (int) t;
         SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 0, 1, 2 * t, 3 * t * t }})
@@ -94,8 +93,9 @@ public class HermiteWaypointSpline {
 
         //check if last point has derivative since the gaps are filled in based on the following points
         if (pointList.get(pointList.size() - 1).autoAssignDerivative) {
-            pointList.get(pointList.size() - 1).setDerivative(pointList.get(pointList.size() - 1).x
-          - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
+            pointList.get(pointList.size() - 1)
+                    .setDerivative(
+                            pointList.get(pointList.size() - 1).x - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
           - pointList.get(pointList.size() - 2).y);
             pointList.get(pointList.size() - 1).autoAssignDerivative = true;
         }
