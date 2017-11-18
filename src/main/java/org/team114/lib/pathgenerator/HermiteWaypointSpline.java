@@ -93,9 +93,8 @@ public class HermiteWaypointSpline {
 
         //check if last point has derivative since the gaps are filled in based on the following points
         if (pointList.get(pointList.size() - 1).autoAssignDerivative) {
-            pointList.get(pointList.size() - 1)
-                    .setDerivative(
-                            pointList.get(pointList.size() - 1).x - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
+            pointList.get(pointList.size() - 1).setDerivative(pointList.get(pointList.size() - 1).x
+          - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
           - pointList.get(pointList.size() - 2).y);
             pointList.get(pointList.size() - 1).autoAssignDerivative = true;
         }
@@ -189,7 +188,7 @@ public class HermiteWaypointSpline {
      * @param bx x of point B
      * @param by y of point B
      * @param dax x derivative of the spline at point A
-     * @param day y der/vative of the spline at point A
+     * @param day y derivative of the spline at point A
      * @param dbx x derivative of the spline at point B
      * @param dby y derivative of the spline at point B
      * @return SimpleMatrix of spline coefficients
