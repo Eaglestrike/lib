@@ -1,13 +1,29 @@
-plugins {
-    id "java"
-    id "eclipse"
-    id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.10.30"
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    // check if the plugin exists (ie imported by super-project). if not, load it
+    try {
+        plugins.getPlugin("jaci.openrio.gradle.GradleRIO")
+    } catch (UnknownPluginException ignore) {
+        dependencies {
+            classpath "gradle.plugin.jaci.openrio.gradle:GradleRIO:2017.10.30"
+        }
+    }
 }
 
 repositories {
     jcenter()
 }
+
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "jaci.openrio.gradle.GradleRIO"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -34,9 +50,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:2.+"
     compile group: 'org.ejml', name: 'ejml-all', version: '0.32'
-
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.2.1'
 }
+
