@@ -1,19 +1,35 @@
 package org.team114.lib.pathgenerator;
 
 public class Waypoint {
-
+    /**
+     * X position of this point.
+     */
     public double x;
+    /**
+     * Y position of this point.
+     */
     public double y;
+    /**
+     * X part of the derivative.
+     */
     public double derivativeX;
+    /**
+     * Y part of the derivative.
+     */
     public double derivativeY;
 
+    /**
+     * Whether the derivative should be assigned automatically or read from the
+     * {@link #derivativeX} and {@link #derivativeY} variables.
+     * }
+     */
     public boolean autoAssignDerivative = true;
 
     /**
      * Creates a new Waypoint at (x, y) with an unspecified derivative.
      *
-     * @param x X coordinate of the Waypoint
-     * @param y Y coordinate of the Waypoint
+     * @param x X coordinate of the new point
+     * @param y Y coordinate of the new point
      */
     public Waypoint(double x, double y) {
         this.x = x;
@@ -24,9 +40,9 @@ public class Waypoint {
      * Creates a new Waypoint at (x, y) then sets the derivative using the specified components with
      * setAngle(double angle). Note that the angle is in radians.
      *
-     * @param x X coordinate of the Waypoint
-     * @param y Y coordinate of the Waypoint
-     * @param angle angle of the derivative of the spline that goes through this point
+     * @param x X coordinate of the new point
+     * @param y Y coordinate of the new point
+     * @param angle angle of the derivative of the spline that goes through the new point
      */
     public Waypoint(double x, double y, double angle) {
         this(x, y);
@@ -37,7 +53,7 @@ public class Waypoint {
      * Creates a new Waypoint at (x, y) then sets the derivative using the specified components with
      * setDerivative(double x, double y).
      *
-     * @param x X coordinate of the Waypoint
+     * @param x X coordinate of the this Waypoint
      * @param y Y coordinate of the Waypoint
      * @param xDerivative the X component of the derivative of the spline that goes through this point
      * @param yDerivative the Y component of the derivative of the spline that goes through this point
@@ -49,17 +65,16 @@ public class Waypoint {
 
     /**
      * Takes in a ratio of x and y and scales them to maintain y/x while putting x and y in a
-     * usable range, preventing unnecessary loops in final splines.g
+     * usable range, preventing unnecessary loops in final splines.
      *
      * @param x derivative x component
      * @param y derivative y component
-     * @return the Waypoint that was assigned the derivative to allow for method chaining
-     * in the application. A new Waypoint is not created by reassigning the derivative.
+     * @return this Waypoint to allow for method chaining
      */
     public Waypoint setDerivative(double x, double y) {
         derivativeY = y / Math.sqrt(x * x + y * y);
         derivativeX = x / Math.sqrt(x * x + y * y);
-        autoAssignDerivative = true;
+        autoAssignDerivative = false;
         return this;
     }
 
@@ -70,8 +85,7 @@ public class Waypoint {
      *
      * @param x derivative x component
      * @param y derivative y component
-     * @return the Waypoint that was assigned the derivative to allow for method chaining in the
-     * application. A new Waypoint is not created by reassigning the derivative.
+     * @return this Waypoint to allow for method chaining
      */
     public Waypoint setDerivativeUnscaled(double x, double y) {
         derivativeX = x;
@@ -84,8 +98,7 @@ public class Waypoint {
      * Takes in an angle and uses it to determine the derivative x and y components.
      *
      * @param angle the angle of the derivative in radians
-     * @return the Waypoint that was assigned the derivative to allow for method chaining
-     * in the application. A new Waypoint is not created by reassigning the derivative.
+     * @return this Waypoint to allow method chaining
      */
     public Waypoint setAngle(double angle) {
         derivativeY = Math.sin(angle);
@@ -95,10 +108,10 @@ public class Waypoint {
     }
 
     /**
-     * Returns the current derivative of a waypoint in the form of the y/x. If a Waypoint has
+     * Returns the current derivative of this waypoint (y/x). If a Waypoint has
      * been auto-assigned a derivative, that will be returned.
      *
-     * @return the derivative at a Waypoint
+     * @return the derivative at this point
      */
     public double getDerivative() {
         return derivativeY / derivativeX;

@@ -55,7 +55,7 @@ public class HermiteWaypointSpline {
         int index = (int) t;
         t -= (int) t;
         SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 1, t, t * t, t * t * t }})
-                        .mult(splineSections.get(index));
+                .mult(splineSections.get(index));
 
         return new double[] { solution.get(0, 0), solution.get(0, 1)};
     }
@@ -71,14 +71,17 @@ public class HermiteWaypointSpline {
      */
 
     public double getDerivativeAtT(double t) {
-        if (t < 0 || t > splineSections.size())
+        if (t < 0 || t > splineSections.size()) {
             if (safeReturn) {
                 t = t < 0 ? 0 : splineSections.size();
             } else return Double.NaN;
+        }
         int index = (int) t;
         t -= (int) t;
+
         SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 0, 1, 2 * t, 3 * t * t }})
                 .mult(splineSections.get(index));
+
         return solution.get(0, 1) / solution.get(0, 1);
     }
 
@@ -94,8 +97,8 @@ public class HermiteWaypointSpline {
         //check if last point has derivative since the gaps are filled in based on the following points
         if (pointList.get(pointList.size() - 1).autoAssignDerivative) {
             pointList.get(pointList.size() - 1).setDerivative(pointList.get(pointList.size() - 1).x
-          - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
-          - pointList.get(pointList.size() - 2).y);
+                    - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
+                    - pointList.get(pointList.size() - 2).y);
             pointList.get(pointList.size() - 1).autoAssignDerivative = true;
         }
 
