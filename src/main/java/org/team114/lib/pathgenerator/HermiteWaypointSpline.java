@@ -9,7 +9,7 @@ import org.ejml.simple.SimpleMatrix;
  * A HermiteWaypointSpline constructs a Spline based on a series of Waypoints
  * using a piecewise function of parametric cubic interpolating spline sections.
  *
- * @link https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
+ * @see <a href="https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf">Spline Curves</a>
  */
 public class HermiteWaypointSpline {
 

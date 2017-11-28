@@ -1,5 +1,8 @@
 package org.team114.lib.pathgenerator;
 
+/**
+ * Represents a point and a derivative.
+ */
 public class Waypoint {
     /**
      * X position of this point.
