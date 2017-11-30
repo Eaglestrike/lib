@@ -11,12 +11,13 @@ import org.ejml.simple.SimpleMatrix;
  *
  * @see <a href="https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf">Spline Curves</a>
  */
+
 public class HermiteWaypointSpline {
 
 
     /** List of points and matrices containing spline coefficients. */
-    private final List<SimpleMatrix> splineSections = new ArrayList<>();
-    private final List<Waypoint> pointList = new ArrayList<>();
+    protected List<SimpleMatrix> splineSections = new ArrayList<>();
+    protected List<Waypoint> pointList = new ArrayList<>();
 
     /** Generic multiplier for Hermite splines which is needed to find the solution. */
     private static final SimpleMatrix multBase =
@@ -56,7 +57,6 @@ public class HermiteWaypointSpline {
         t -= (int) t;
         SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 1, t, t * t, t * t * t }})
                 .mult(splineSections.get(index));
-
         return new double[] { solution.get(0, 0), solution.get(0, 1)};
     }
 
@@ -92,22 +92,15 @@ public class HermiteWaypointSpline {
      */
     public void reloadSpline() {
         splineSections.clear();
-        if (pointList.size() < 2) return;
+        if(pointList.size() < 2) return;
 
         //check if last point has derivative since the gaps are filled in based on the following points
-        if (pointList.get(pointList.size() - 1).autoAssignDerivative) {
-            pointList.get(pointList.size() - 1).setDerivative(pointList.get(pointList.size() - 1).x
-                    - pointList.get(pointList.size() - 2).x,pointList.get(pointList.size() - 1).y
-                    - pointList.get(pointList.size() - 2).y);
-            pointList.get(pointList.size() - 1).autoAssignDerivative = true;
-        }
+        if(pointList.get(pointList.size() - 1).autoAssignDerivative)
+            pointList.get(pointList.size() - 1).assignDerivative( pointList.get(pointList.size() - 2),  pointList.get(pointList.size() - 1));
 
-        for (int i = 0; i < pointList.size() - 1; i++) {
-            if (pointList.get(i).autoAssignDerivative && i != 0) {
-                pointList.get(i).setDerivative((pointList.get(i + 1).x - pointList.get(i - 1).x),
-                        (pointList.get(i + 1).y - pointList.get(i - 1).y));
-                pointList.get(i).autoAssignDerivative = true;
-            }
+        for(int i = 0; i < pointList.size() - 1; i++) {
+            if(pointList.get(i).autoAssignDerivative && i != 0)
+                pointList.get(i).assignDerivative(pointList.get(i - 1), pointList.get(i + 1));
             loadSplineBetweenWaypoints(pointList.get(i), pointList.get(i + 1));
         }
     }
@@ -123,12 +116,12 @@ public class HermiteWaypointSpline {
 
     /**
      * Returns the matrices used to generate the spline.
-     *
      * @return SimpleMatrix[] array of coefficients
      */
     public SimpleMatrix[] getSplineSections() { 
         return (SimpleMatrix[]) splineSections.toArray(); 
     }
+    
     /**
      * If t is out of the range of the spline, safe return will return the last point on the spline
      * otherwise null is returned.
@@ -200,5 +193,6 @@ public class HermiteWaypointSpline {
       double dax, double day, double dbx, double dby) {
         return multBase.mult(new SimpleMatrix(new double[][] {{ax, ay}, {bx, by}, {dax, day},
         {dbx, dby}}));
+
     }
 }

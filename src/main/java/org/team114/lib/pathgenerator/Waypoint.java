@@ -1,9 +1,11 @@
 package org.team114.lib.pathgenerator;
 
+import java.io.Serializable;
+
 /**
  * Represents a point and a derivative.
  */
-public class Waypoint {
+public class Waypoint implements Serializable {
     /**
      * X position of this point.
      */
@@ -119,5 +121,31 @@ public class Waypoint {
     public double getDerivative() {
         return derivativeY / derivativeX;
     }
-    
+
+
+    /**
+     *
+     * This function assigns a derivative to a point based on its surrounding points.
+     * It works by getting the midpoint of points before and after,
+     * drawing a line between this point and the midpoint, then 
+     * the derivative at this point is the inverse of the slope of the line
+     * @param before is the point before this point
+     * @param after is the point after this point
+     */
+    public void assignDerivative(Waypoint before, Waypoint after) {
+        setDerivative((after.x-before.x),(after.y-before.y));
+        // setDerivative((before.x + after.x) / 2 - x, (before.y + after.y) / 2 - y);
+
+        autoAssignDerivative = true;
+    }
+
+
+    /**
+     * @return a string explanation of this point for use in debug.
+     */
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")\nDerivative: " + autoAssignDerivative + "\nx: "
+                + derivativeX + "\ny: " + derivativeY;
+    }
 }

@@ -51,6 +51,4 @@ public class SplinePath extends HermiteWaypointSpline {
 
         return bestT;
     }
-
-
 }
