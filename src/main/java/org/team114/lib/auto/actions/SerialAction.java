@@ -1,5 +1,7 @@
 package org.team114.lib.auto.actions;
 
+import java.util.List;
+
 import org.team114.lib.auto.Action;
 import org.team114.lib.auto.CompositeAction;
 
@@ -9,6 +11,22 @@ import org.team114.lib.auto.CompositeAction;
  * a new action should be preferred if the sequence is likely to be reused.
  */
 public class SerialAction extends CompositeAction {
+
+    /**
+     * Create a new instance of this class from actions given as parameters, using a variadic constructor.
+     * @param actions the actions to be executed
+     */
+    public SerialAction(Action ...actions) {
+        super(actions);
+    }
+
+    /**
+     * Create a new instance of this class from a list of actions.
+     * @param actions a list of the action to be executed
+     */
+    public SerialAction(List<Action> actions) {
+        super(actions);
+    }
 
     /**
      * Run each action in the list provided upon construction sequentially.
