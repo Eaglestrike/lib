@@ -20,6 +20,23 @@ public class ParallelAction extends CompositeAction {
     private static ExecutorService executor = Executors.newCachedThreadPool();
 
     /**
+     * Create a new instance of this class from actions given as parameters, using a variadic constructor.
+     * @param actions the actions to be executed
+     */
+    public ParallelAction(Action ...actions) {
+        super(actions);
+    }
+
+    /**
+     * Create a new instance of this class from a list of actions.
+     * @param actions a list of the action to be executed
+     */
+    public ParallelAction(List<Action> actions) {
+        super(actions);
+    }
+
+
+    /**
      * Execute every action concurrently, each one running on a thread from the pool.
      */
     @Override
