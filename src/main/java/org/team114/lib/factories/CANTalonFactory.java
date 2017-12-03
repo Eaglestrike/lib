@@ -9,6 +9,10 @@ import com.ctre.CANTalon.TalonControlMode;
  */
 public class CANTalonFactory {
 
+    private CANTalonFactory() {
+        throw new AssertionError();
+    }
+
     /**
      * Creates a new talon and configures it.
      * @param id the id for the new talon
@@ -17,7 +21,7 @@ public class CANTalonFactory {
         CANTalon talon = new CANTalon(id);
         configureTalon(talon);
         return talon;
-    };
+    }
 
     /**
      * Configures an existing talon. This is provided in case we ever need
@@ -26,6 +30,7 @@ public class CANTalonFactory {
      *
      * @param talon the talon to be (re)configured
      */
-    public static void configureTalon(CANTalon talon) {};
+    public static void configureTalon(CANTalon talon) {}
+
 
 }
