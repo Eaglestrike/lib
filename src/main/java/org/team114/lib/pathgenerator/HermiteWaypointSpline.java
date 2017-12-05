@@ -198,6 +198,12 @@ public class HermiteWaypointSpline {
 
     }
     
+    /**
+     * Same as getClosestPointOnSplineSection() but uses gradient descent.
+     * @param p is the point get close to
+     * @param spline is the spline section to look at
+     * @return the closest point
+     */
     public static Point gradientDescent(Point p, SimpleMatrix spline) {
         double d = 0.5, high = 1, low = 0;
 
@@ -216,21 +222,18 @@ public class HermiteWaypointSpline {
                 d = b;
             }
         }
-        
         SimpleMatrix end = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
         return new Point(end.get(0, 0), end.get(0, 1));
     }
 
-    double a = 0, b = 0, c = 0;
-    
+    /**
+     * Uses gradient descent in order to get the closest point on this spline to some point p.
+     * @param p is the point to get the closest point on the spline to
+     * @return The closest point
+     */
     public Point getClosestPointOnSpline(Point p) {
-        c+=1;
-        System.out.println((a/c) + " " + (b/c));
         double bestDistance = Double.MAX_VALUE;
         Point bestPoint = null;
-        long time = System.currentTimeMillis();
-        
-        //do gradient descent
         for(SimpleMatrix m : splineSections) {
             Point result = gradientDescent(p, m);
             if(result == null)
@@ -241,27 +244,15 @@ public class HermiteWaypointSpline {
                 bestDistance = dist;
             }
         }
-        
-       
-        a += System.currentTimeMillis() - time;
-        time = System.currentTimeMillis();
-        
-        
-        //algebraic method
-        for(SimpleMatrix m : splineSections) {
-            Point result = getClosestPointOnSplineSection(p, m);
-            if(result == null)
-                continue;
-            double dist = Geometry.dist(p.x, p.y, result.x, result.y);
-            if(dist < bestDistance) {
-                bestPoint = result;
-                bestDistance = dist;
-            }
-        }
-        b += System.currentTimeMillis() - time;
         return bestPoint;
     }
     
+    /**
+     * Gets the closest point on a spline section to some point p.
+     * @param p is the point get close to
+     * @param spline is the spline section to look at
+     * @return the closest point
+     */
     public Point getClosestPointOnSplineSection(Point p, SimpleMatrix spline) {
         SimpleMatrix ex = spline.cols(0, 1);
         SimpleMatrix ey = spline.cols(1, 2);
@@ -279,7 +270,7 @@ public class HermiteWaypointSpline {
         
         SimpleMatrix end = Geometry.addPolynomial(a, b);
 
-        double[] roots = Geometry.solvePolynomial(end, 20, 0.01);
+        double[] roots = Geometry.solvePolynomial(end, 50, 0.0001);
 
         double bestDistance = Double.MAX_VALUE;
         Point bestPoint = null;
@@ -303,7 +294,6 @@ public class HermiteWaypointSpline {
                 bestDistance = dist;
             }
         }
-
         return bestPoint;
     }
 }

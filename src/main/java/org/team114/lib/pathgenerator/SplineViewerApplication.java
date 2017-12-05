@@ -64,7 +64,7 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
     private BufferedImage field = null, base = null;
     private static final String fieldImagePath = "/org/team114/lib/util/field.jpg";
 
-    private static boolean vectors = false, addingPoint = true;
+    private static boolean vectors = false, addingPoint = true, closest = false;
 
     private static JTextArea editor = new JTextArea("");
 
@@ -115,7 +115,7 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(getJMenu("File", this, "Set Image",null, "Save","Open","Export"));
         menuBar.add(getJMenu("Edit", this, "Add Point", "Toggle Vectors","Update From Editor"));
-        menuBar.add(getJMenu("View", this, "Cleanup Editor", "Auto Scale Image"));
+        menuBar.add(getJMenu("View", this, "Cleanup Editor", "Auto Scale Image","Show Closest Point"));
         setJMenuBar(menuBar);
 
         setSize(1500, 800);
@@ -343,7 +343,7 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
                     base = ImageIO.read(new File(path));
 
                     field = resize(base, splines.getWidth(), (int)((double)splines.getWidth() / (double)base.getWidth() * base.getHeight()));
-                    super.setSize(base.getWidth()+150, base.getHeight()+30);
+                 //   super.setSize(base.getWidth()+150, base.getHeight()+30);
                 } catch (IOException e2) {
                     error("Could not get file.");
                     return;
@@ -355,6 +355,8 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
             updateEditor();
         }else if(e.getActionCommand().equals("Auto Scale Image")){
             field = resize(base, splines.getWidth(), (int)((double)splines.getWidth() / (double)base.getWidth() * base.getHeight()));
+        }else if(e.getActionCommand().equals("Show Closest Point")){
+            closest = !closest;
         }
 
 
@@ -411,19 +413,17 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
             g.setColor(Color.GREEN);
             for(Waypoint w :spline.getWaypointList())
                 g.fillOval((int)w.x-5, (int)w.y-5, 10, 10);
-            Point p = null;
-            try {
-                p = spline.getClosestPointOnSpline(new Point(n.x,n.y));
-            }catch(Exception e) {
-                e.printStackTrace();
+            
+            if(closest) {
+                Point p = spline.getClosestPointOnSpline(new Point(n.x,n.y));
+                g.setColor(Color.RED);
+                if(p != null) {
+                    g.fillOval((int)p.x-5, (int)p.y-5, 10, 10);
+                    double dist = Geometry.dist(p.x, p.y, n.x, n.y);
+                    g.drawOval((int)(n.x-dist), (int)(n.y-dist), (int)(dist*2), (int)(dist*2));
+                } else if(spline.getSplineDomain() > 1)
+                    System.err.println("Point is null");
             }
-            g.setColor(Color.RED);
-            if(p != null) {
-                g.fillOval((int)p.x-5, (int)p.y-5, 10, 10);
-                double dist = Geometry.dist(p.x, p.y, n.x, n.y);
-                g.drawOval((int)(n.x-dist), (int)(n.y-dist), (int)(dist*2), (int)(dist*2));
-            } else if(spline.getSplineDomain() > 1)
-                System.err.println("Point is null");
 
             b.drawImage(b2, 0, 0, null);
         }
