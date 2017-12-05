@@ -41,6 +41,7 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.team114.lib.util.Geometry;
+import org.team114.lib.util.Point;
 
 
 /**
@@ -71,8 +72,10 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
 
     private double grayout = 0.5;
 
-    public static void main(String[] args) throws InterruptedException { 
-        new SplineViewerApplication(); 
+    public static void main(String[] args) { 
+        try {
+            new SplineViewerApplication(); 
+        }catch(Exception e) { }
     }
 
 
@@ -117,7 +120,7 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
 
         setSize(1500, 800);
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        spline  = new HermiteWaypointSpline(new Waypoint[] { n });
+        spline  = new HermiteWaypointSpline(new Waypoint[] { new Waypoint(100,100), new Waypoint(300, 300) });
         splines.addMouseMotionListener(this);
         splines.addMouseListener(this);
 
@@ -304,19 +307,19 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
             //TODO: Export!
             error("This feature is not yet supported.");
 
-            
-//            
-//            JFileChooser chooser = new JFileChooser();
-//            chooser.setCurrentDirectory(new File("/Documents"));
-//            if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-//                try(FileOutputStream out = new FileOutputStream(chooser.getSelectedFile()+".path")) {
-//                   
-//                    out
-//                    
-//                } catch (IOException e1) {
-//                    error("Error writing file!\n"+exceptionText(e1));
-//                }
-//            }
+
+            //            
+            //            JFileChooser chooser = new JFileChooser();
+            //            chooser.setCurrentDirectory(new File("/Documents"));
+            //            if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            //                try(FileOutputStream out = new FileOutputStream(chooser.getSelectedFile()+".path")) {
+            //                   
+            //                    out
+            //                    
+            //                } catch (IOException e1) {
+            //                    error("Error writing file!\n"+exceptionText(e1));
+            //                }
+            //            }
 
 
 
@@ -408,8 +411,19 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
             g.setColor(Color.GREEN);
             for(Waypoint w :spline.getWaypointList())
                 g.fillOval((int)w.x-5, (int)w.y-5, 10, 10);
-
-
+            Point p = null;
+            try {
+                p = spline.getClosestPointOnSpline(new Point(n.x,n.y));
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+            g.setColor(Color.RED);
+            if(p != null) {
+                g.fillOval((int)p.x-5, (int)p.y-5, 10, 10);
+                double dist = Geometry.dist(p.x, p.y, n.x, n.y);
+                g.drawOval((int)(n.x-dist), (int)(n.y-dist), (int)(dist*2), (int)(dist*2));
+            } else if(spline.getSplineDomain() > 1)
+                System.err.println("Point is null");
 
             b.drawImage(b2, 0, 0, null);
         }

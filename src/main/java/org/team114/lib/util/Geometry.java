@@ -31,6 +31,19 @@ public class Geometry {
                 result[i+j][0] += a.get(i, 0) * b.get(j, 0);
         return new SimpleMatrix(result);
     }
+    
+    /**
+     * Simply adds two polynomials in matrix form.
+     * @param a - First polynomial
+     * @param b - Second polynomial
+     * @return the sum of polynomials a and b
+     */
+    public static SimpleMatrix addPolynomial(SimpleMatrix a, SimpleMatrix b) {
+        double[][] result = new double[(int)Math.max(a.numRows(),b.numRows())][1];
+        for(int i = 0; i < Math.max(a.numRows(),b.numRows()); i++)
+                result[i][0] += (i < a.numRows() ? a.get(i, 0) : 0) + (i < b.numRows() ? b.get(i, 0) : 0);
+        return new SimpleMatrix(result);
+    }
 
     /**
      * Uses newton's method to solve for the roots of the given polynomial of any length.
@@ -72,7 +85,7 @@ public class Geometry {
                 runner = runner - fx / dx;
 
                 //break if perfect solution
-                if(fx == 0)
+                if(Math.abs(fx) <= acceptedError)
                     break;
             }
             //test predicted root against initial polynomial
@@ -82,7 +95,9 @@ public class Geometry {
 
             if(Math.abs(test) <= acceptedError) {
                 realSolutions.add(runner);
-                P = reducePolynomialByRoot(P, runner);
+                if(P.numRows() > 2)
+                    P = reducePolynomialByRoot(P, runner);
+                else break;
             }else { 
                 break;
             }
@@ -103,7 +118,7 @@ public class Geometry {
      * @return - A new polynomial
      */
     public static SimpleMatrix reducePolynomialByRoot(SimpleMatrix polynomial, double root) {
-        if(polynomial == null || polynomial.numCols() < 1)
+        if(polynomial == null || polynomial.numRows() < 1)
             throw new RuntimeException("Invalid polynomial");
 
         double[][] coefficients = new double[polynomial.numRows() - 1][1];

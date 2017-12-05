@@ -3,6 +3,8 @@ package org.team114.lib.pathgenerator;
 import java.util.List;
 import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
+import org.team114.lib.util.Geometry;
+import org.team114.lib.util.Point;
 
 
 /**
@@ -22,7 +24,7 @@ public class HermiteWaypointSpline {
     /** Generic multiplier for Hermite splines which is needed to find the solution. */
     private static final SimpleMatrix multBase =
             new SimpleMatrix(new double[][] {{1, 0, 0, 0}, {1, 1, 1, 1}, {0, 1, 0, 0}, {0, 1, 2, 3}})
-                    .invert();
+            .invert();
 
     private boolean safeReturn = false;
     /**
@@ -121,7 +123,7 @@ public class HermiteWaypointSpline {
     public SimpleMatrix[] getSplineSections() { 
         return (SimpleMatrix[]) splineSections.toArray(); 
     }
-    
+
     /**
      * If t is out of the range of the spline, safe return will return the last point on the spline
      * otherwise null is returned.
@@ -140,7 +142,7 @@ public class HermiteWaypointSpline {
     public void appendPoints(Waypoint[] points) {
         for (Waypoint w : points) {
             pointList.add(w);
-    }
+        }
         reloadSpline();
     }
 
@@ -169,11 +171,11 @@ public class HermiteWaypointSpline {
         return pointList;
     }
 
-    
+
     private void loadSplineBetweenWaypoints(Waypoint a, Waypoint b) {
         double mult = Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
         splineSections.add(generateSplineSection(a.x, a.y, b.x, b.y, a.derivativeX * mult,
-        a.derivativeY * mult, b.derivativeX * mult, b.derivativeY * mult));
+                a.derivativeY * mult, b.derivativeX * mult, b.derivativeY * mult));
     }
 
     /**
@@ -190,9 +192,118 @@ public class HermiteWaypointSpline {
      * @return SimpleMatrix of spline coefficients
      */
     public static SimpleMatrix generateSplineSection(double ax, double ay, double bx, double by,
-      double dax, double day, double dbx, double dby) {
+            double dax, double day, double dbx, double dby) {
         return multBase.mult(new SimpleMatrix(new double[][] {{ax, ay}, {bx, by}, {dax, day},
-        {dbx, dby}}));
+            {dbx, dby}}));
 
+    }
+    
+    public static Point gradientDescent(Point p, SimpleMatrix spline) {
+        double d = 0.5, high = 1, low = 0;
+
+        for(int i = 0; i < 20; i++) {
+            double a = (high + d) / 2;
+            double b = (low + d) / 2;
+            SimpleMatrix higher = new SimpleMatrix(new double[][] {{1,a,a*a,a*a*a}}).mult(spline);
+            SimpleMatrix lower = new SimpleMatrix(new double[][] {{1,b,b*b,b*b*b}}).mult(spline);
+            double dist1 = Geometry.dist(p.x, p.y, higher.get(0, 0), higher.get(0, 1));
+            double dist2 = Geometry.dist(p.x, p.y, lower.get(0, 0), lower.get(0, 1));
+            if(dist1 < dist2) {
+                low = d;
+                d = a;
+            }else {
+                high = d;
+                d = b;
+            }
+        }
+        
+        SimpleMatrix end = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
+        return new Point(end.get(0, 0), end.get(0, 1));
+    }
+
+    double a = 0, b = 0, c = 0;
+    
+    public Point getClosestPointOnSpline(Point p) {
+        c+=1;
+        System.out.println((a/c) + " " + (b/c));
+        double bestDistance = Double.MAX_VALUE;
+        Point bestPoint = null;
+        long time = System.currentTimeMillis();
+        
+        //do gradient descent
+        for(SimpleMatrix m : splineSections) {
+            Point result = gradientDescent(p, m);
+            if(result == null)
+                continue;
+            double dist = Geometry.dist(p.x, p.y, result.x, result.y);
+            if(dist < bestDistance) {
+                bestPoint = result;
+                bestDistance = dist;
+            }
+        }
+        
+       
+        a += System.currentTimeMillis() - time;
+        time = System.currentTimeMillis();
+        
+        
+        //algebraic method
+        for(SimpleMatrix m : splineSections) {
+            Point result = getClosestPointOnSplineSection(p, m);
+            if(result == null)
+                continue;
+            double dist = Geometry.dist(p.x, p.y, result.x, result.y);
+            if(dist < bestDistance) {
+                bestPoint = result;
+                bestDistance = dist;
+            }
+        }
+        b += System.currentTimeMillis() - time;
+        return bestPoint;
+    }
+    
+    public Point getClosestPointOnSplineSection(Point p, SimpleMatrix spline) {
+        SimpleMatrix ex = spline.cols(0, 1);
+        SimpleMatrix ey = spline.cols(1, 2);
+        SimpleMatrix dx = ex.extractMatrix(1, ex.numRows(), 0, 1);
+        SimpleMatrix dy = ey.extractMatrix(1, ex.numRows(), 0, 1);
+
+        for(int i = 0; i < dx.numRows(); i++) {
+            dx.set(i, 0, dx.get(i, 0) * (i + 1));
+            dy.set(i, 0, dy.get(i, 0) * (i + 1));
+        }
+
+        //For some reason they have a SimpleMatrix.divide(double), but not a SimpleMatrix.multiply()
+        SimpleMatrix a = Geometry.addPolynomial(Geometry.multiplyPolynomial(ex, dx), Geometry.multiplyPolynomial(ey, dy));
+        SimpleMatrix b = Geometry.addPolynomial(dx.divide(1 / p.x), dy.divide(1 / p.y)).negative();
+        
+        SimpleMatrix end = Geometry.addPolynomial(a, b);
+
+        double[] roots = Geometry.solvePolynomial(end, 20, 0.01);
+
+        double bestDistance = Double.MAX_VALUE;
+        Point bestPoint = null;
+
+        for(double d : roots) {
+            if(d < 0 || d > 1)
+                continue;
+            SimpleMatrix point = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
+            double dist = Geometry.dist(p.x, p.y, point.get(0, 0), point.get(0, 1));
+            if(dist < bestDistance) {
+                bestPoint = new Point(point.get(0, 0), point.get(0, 1));
+                bestDistance = dist;
+            }
+        }
+
+        for(double d = 0; d < 2; d++) {
+            SimpleMatrix point = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
+            double dist = Geometry.dist(p.x, p.y, point.get(0, 0), point.get(0, 1));
+            if(dist < bestDistance) {
+                bestPoint = new Point(point.get(0, 0), point.get(0, 1));
+                bestDistance = dist;
+            }
+        }
+
+        return bestPoint;
     }
 }
