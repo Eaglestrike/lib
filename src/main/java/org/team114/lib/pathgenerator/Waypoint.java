@@ -2,18 +2,13 @@ package org.team114.lib.pathgenerator;
 
 import java.io.Serializable;
 
+import org.team114.lib.util.Point;
+
 /**
  * Represents a point and a derivative.
  */
-public class Waypoint implements Serializable {
-    /**
-     * X position of this point.
-     */
-    public double x;
-    /**
-     * Y position of this point.
-     */
-    public double y;
+public class Waypoint extends Point implements Serializable {
+    
     /**
      * X part of the derivative.
      */
@@ -37,8 +32,7 @@ public class Waypoint implements Serializable {
      * @param y Y coordinate of the new point
      */
     public Waypoint(double x, double y) {
-        this.x = x;
-        this.y = y;
+        super(x,y);
     }
     
     /**
@@ -50,7 +44,7 @@ public class Waypoint implements Serializable {
      * @param angle angle of the derivative of the spline that goes through the new point
      */
     public Waypoint(double x, double y, double angle) {
-        this(x, y);
+        super(x, y);
         setAngle(angle);
     }
 
@@ -64,7 +58,7 @@ public class Waypoint implements Serializable {
      * @param yDerivative the Y component of the derivative of the spline that goes through this point
      */
     public Waypoint(double x, double y, double xDerivative, double yDerivative) {
-        this(x, y);
+        super(x, y);
         setDerivative(xDerivative, yDerivative);
     }
 

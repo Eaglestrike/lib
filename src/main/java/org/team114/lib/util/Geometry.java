@@ -19,6 +19,66 @@ public class Geometry {
     private static final double defaultPolynomialErrorLimit = 1E-5;
 
     /**
+     * Solves a polynomial.
+     * @param P is the polynomial to solve
+     * @param x to put into polynomial
+     * @return the value of P(x)
+     */
+    public static double solvePolynomial(SimpleMatrix P, double x) {
+        double mult = 1, end = 0;
+        for(int i = 0; i < P.numRows(); i++, mult *= x)
+            end += mult * P.get(i, 0);
+        return end;
+    } 
+    
+    /**
+     * Solves a parametric function for a point.
+     * @param P is the polynomial to solve
+     * @param x to put into polynomial
+     * @return the value of P(x)
+     */
+    public static Point solveParametricPolynomial(SimpleMatrix P, double x) {
+        return new Point(solvePolynomial(P.cols(0, 1), x), solvePolynomial(P.cols(1, 2), x));
+    }
+    
+    /**
+     * Solves a parametric function for a point containing the x and y derivative.
+     * @param P is the polynomial to solve
+     * @param x to put into polynomial
+     * @return the value of P(x)
+     */
+    public static Point solveParametricDerivative(SimpleMatrix P, double x) {
+        return new Point(getDerivative(P.cols(0, 1), x), getDerivative(P.cols(1, 2), x));
+    }
+    
+    /**
+     * Solves a polynomial.
+     * @param P is the polynomial to solve
+     * @param x to put into polynomial
+     * @return the value of P(x)
+     */
+    public static SimpleMatrix getDerivative(SimpleMatrix P) {
+        double[][] end = new double[P.numRows() - 1][1];
+        for(int i = 1; i < P.numRows(); i++)
+            end[i - 1][0] = i * P.get(i, 0);  
+        return new SimpleMatrix(end);
+    }
+
+    /**
+     * Solves for the derivative. Works the same as solvePolynomial(getDerivative(A)), but a tiny
+     * bit more efficient.
+     * @param P is the polynomial to solve
+     * @param x to put into polynomial
+     * @return the value of P(x)
+     */
+    public static double getDerivative(SimpleMatrix P, double x) {
+        double mult = 1, end = 0;        
+        for(int i = 1; i < P.numRows(); i++, mult *= x)
+            end += mult * i * P.get(i, 0);  
+        return end;
+    }
+    
+    /**
      * Simply multiples two polynomials in matrix form.
      * @param a - First polynomial
      * @param b - Second polynomial

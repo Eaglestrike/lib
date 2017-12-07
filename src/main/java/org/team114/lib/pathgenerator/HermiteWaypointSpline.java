@@ -26,6 +26,12 @@ public class HermiteWaypointSpline {
             new SimpleMatrix(new double[][] {{1, 0, 0, 0}, {1, 1, 1, 1}, {0, 1, 0, 0}, {0, 1, 2, 3}})
             .invert();
 
+    /** Generic multiplier for Quintic Hermite splines which is needed to find the solution. */
+    private static final SimpleMatrix multBaseQ =
+            new SimpleMatrix(new double[][] {{1, 0, 0, 0, 0, 0}, {1, 1, 1, 1, 1, 1},
+                {0, 1, 0, 0, 0, 0}, {0, 1, 2, 3, 4, 5}, {0, 0, 2, 0, 0, 0}, {0, 0, 2, 6, 12, 20}})
+            .invert();
+
     private boolean safeReturn = false;
     /**
      * A HermiteSpline instance will take points and handle finding which function to use to find
@@ -49,7 +55,7 @@ public class HermiteWaypointSpline {
      * @param t value which determines x and y, and which piecewise spline function to use
      * @return double[] containing {x, y}
      */
-    public double[] getPointAtT(double t) {
+    public Point getPointAtT(double t) {
         if (t < 0 || t > splineSections.size())
             if (safeReturn) {
                 t = t < 0 ? 0 : splineSections.size();
@@ -57,9 +63,8 @@ public class HermiteWaypointSpline {
 
         int index = (int) t;
         t -= (int) t;
-        SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 1, t, t * t, t * t * t }})
-                .mult(splineSections.get(index));
-        return new double[] { solution.get(0, 0), solution.get(0, 1)};
+
+        return Geometry.solveParametricPolynomial(splineSections.get(index), t);
     }
 
     /**
@@ -72,19 +77,16 @@ public class HermiteWaypointSpline {
      * @return double equal to dy/dx
      */
 
-    public double getDerivativeAtT(double t) {
+    public Point getDerivativeAtT(double t) {
         if (t < 0 || t > splineSections.size()) {
             if (safeReturn) {
                 t = t < 0 ? 0 : splineSections.size();
-            } else return Double.NaN;
+            } else return new Point(Double.NaN, Double.NaN);
         }
         int index = (int) t;
         t -= (int) t;
 
-        SimpleMatrix solution = new SimpleMatrix(new double[][] {{ 0, 1, 2 * t, 3 * t * t }})
-                .mult(splineSections.get(index));
-
-        return solution.get(0, 1) / solution.get(0, 1);
+        return Geometry.solveParametricDerivative(splineSections.get(index), t);
     }
 
     /**
@@ -173,6 +175,8 @@ public class HermiteWaypointSpline {
 
 
     private void loadSplineBetweenWaypoints(Waypoint a, Waypoint b) {
+        //multiplying by length makes adds more curves (otherwise its more like line segments)
+        //But it also complicated velocity from spline
         double mult = Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
         splineSections.add(generateSplineSection(a.x, a.y, b.x, b.y, a.derivativeX * mult,
                 a.derivativeY * mult, b.derivativeX * mult, b.derivativeY * mult));
@@ -197,7 +201,33 @@ public class HermiteWaypointSpline {
             {dbx, dby}}));
 
     }
-    
+
+    /**
+     * It it like the other one but with more useless variables worked in. If you thought the other
+     * one was confusing this is going to be way worse. I got the extra complication by specifying
+     * the derivative of the derivative. I have absolutely no clue where that will come from but good luck.
+     * 
+     * @param ax x of point A
+     * @param ay y of point A
+     * @param bx x of point B
+     * @param by y of point B
+     * @param dax x derivative of the spline at point A
+     * @param day y derivative of the spline at point A
+     * @param dbx x derivative of the spline at point B
+     * @param dby y derivative of the spline at point B
+     * @param ddax x derivative of the derivative of the spline at point A
+     * @param dday y derivative of the derivative of the spline at point A
+     * @param ddbx x derivative of the derivative of the spline at point B
+     * @param ddby y derivative of the derivative of the spline at point B
+     * @return
+     */
+    public static SimpleMatrix generateQuinticSplineSection(double ax, double ay, double bx, double by,
+            double dax, double day, double dbx, double dby, double ddax, double dday, double ddbx,
+            double ddby) {
+        return multBase.mult(new SimpleMatrix(new double[][] {{ax, ay}, {bx, by}, {dax, day},
+            {dbx, dby}, {ddax, dday}, {ddbx, ddby}}));
+    }
+
     /**
      * Same as getClosestPointOnSplineSection() but uses gradient descent.
      * @param p is the point get close to
@@ -210,10 +240,10 @@ public class HermiteWaypointSpline {
         for(int i = 0; i < 20; i++) {
             double a = (high + d) / 2;
             double b = (low + d) / 2;
-            SimpleMatrix higher = new SimpleMatrix(new double[][] {{1,a,a*a,a*a*a}}).mult(spline);
-            SimpleMatrix lower = new SimpleMatrix(new double[][] {{1,b,b*b,b*b*b}}).mult(spline);
-            double dist1 = Geometry.dist(p.x, p.y, higher.get(0, 0), higher.get(0, 1));
-            double dist2 = Geometry.dist(p.x, p.y, lower.get(0, 0), lower.get(0, 1));
+            Point higher = Geometry.solveParametricPolynomial(spline, a);
+            Point lower = Geometry.solveParametricPolynomial(spline, b);
+            double dist1 = Geometry.dist(p.x, p.y, higher.x, higher.y);
+            double dist2 = Geometry.dist(p.x, p.y, lower.x, lower.y);
             if(dist1 < dist2) {
                 low = d;
                 d = a;
@@ -222,8 +252,7 @@ public class HermiteWaypointSpline {
                 d = b;
             }
         }
-        SimpleMatrix end = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
-        return new Point(end.get(0, 0), end.get(0, 1));
+        return Geometry.solveParametricPolynomial(spline, d);
     }
 
     /**
@@ -246,7 +275,7 @@ public class HermiteWaypointSpline {
         }
         return bestPoint;
     }
-    
+
     /**
      * Gets the closest point on a spline section to some point p.
      * @param p is the point get close to
@@ -267,7 +296,7 @@ public class HermiteWaypointSpline {
         //For some reason they have a SimpleMatrix.divide(double), but not a SimpleMatrix.multiply()
         SimpleMatrix a = Geometry.addPolynomial(Geometry.multiplyPolynomial(ex, dx), Geometry.multiplyPolynomial(ey, dy));
         SimpleMatrix b = Geometry.addPolynomial(dx.divide(1 / p.x), dy.divide(1 / p.y)).negative();
-        
+
         SimpleMatrix end = Geometry.addPolynomial(a, b);
 
         double[] roots = Geometry.solvePolynomial(end, 50, 0.0001);
@@ -278,19 +307,19 @@ public class HermiteWaypointSpline {
         for(double d : roots) {
             if(d < 0 || d > 1)
                 continue;
-            SimpleMatrix point = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
-            double dist = Geometry.dist(p.x, p.y, point.get(0, 0), point.get(0, 1));
+            Point point = Geometry.solveParametricPolynomial(spline, d);
+            double dist = Geometry.dist(p.x, p.y, point.x, point.y);
             if(dist < bestDistance) {
-                bestPoint = new Point(point.get(0, 0), point.get(0, 1));
+                bestPoint = point;
                 bestDistance = dist;
             }
         }
 
         for(double d = 0; d < 2; d++) {
-            SimpleMatrix point = new SimpleMatrix(new double[][] {{1,d,d*d,d*d*d}}).mult(spline);
-            double dist = Geometry.dist(p.x, p.y, point.get(0, 0), point.get(0, 1));
+            Point point = Geometry.solveParametricPolynomial(spline, d);
+            double dist = Geometry.dist(p.x, p.y, point.x, point.y);
             if(dist < bestDistance) {
-                bestPoint = new Point(point.get(0, 0), point.get(0, 1));
+                bestPoint = point;
                 bestDistance = dist;
             }
         }

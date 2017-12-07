@@ -402,12 +402,12 @@ public class SplineViewerApplication extends JFrame implements MouseMotionListen
 
 
             g.setColor(Color.WHITE);
-            double[] last = spline.getPointAtT(0.00001);
+            Point last = spline.getPointAtT(0.00001);
             for(double t = 0; t < spline.getSplineDomain(); t += 0.001) {
-                double[] next = spline.getPointAtT(t);
-                if((int)next[0] == 0 || (int)next[1] == 0)
+                Point next = spline.getPointAtT(t);
+                if((int)next.x == 0 || (int)next.y == 0)
                     continue;
-                g.drawLine((int)last[0], (int)last[1], (int)next[0], (int)next[1]);
+                g.drawLine((int)last.x, (int)last.y, (int)next.x, (int)next.y);
                 last = next;
             }
             g.setColor(Color.GREEN);
