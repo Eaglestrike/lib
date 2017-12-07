@@ -1,4 +1,4 @@
-package org.team114.lib.pathgenerator;
+package org.team114.lib.util;
 
 public class MotionProfile {
 
