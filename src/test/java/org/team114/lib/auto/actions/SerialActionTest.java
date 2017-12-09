@@ -4,7 +4,6 @@ import org.junit.*;
 import org.mockito.*;
 
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.team114.lib.auto.Action;
 
@@ -15,6 +14,6 @@ public class SerialActionTest {
         Action spy = Mockito.mock(Action.class);
         Action serial = new SerialAction(spy, spy, spy);
         serial.run();
-        verify(spy, times(3)).run();
+        Mockito.verify(spy, times(3)).run();
     }
 }
