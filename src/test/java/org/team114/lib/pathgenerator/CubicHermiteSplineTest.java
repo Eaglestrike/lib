@@ -6,9 +6,6 @@ public class CubicHermiteSplineTest {
 
     @Test
     public void testDegreeChecking() {
-
-
-        //for values
         try {
             CubicHermiteSpline a = new CubicHermiteSpline(new double[]{7, 3, 5, 1});
             CubicHermiteSpline b = new CubicHermiteSpline(new double[]{0, 3, 5, 0});

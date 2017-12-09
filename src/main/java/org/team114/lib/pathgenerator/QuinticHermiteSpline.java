@@ -2,6 +2,7 @@ package org.team114.lib.pathgenerator;
 import java.lang.Math;
 public class QuinticHermiteSpline implements ParametricOneVariableSpline {
     private Polynomial a;
+    private Polynomial ddx = null;
 
     public QuinticHermiteSpline(double p0, double v0, double a0, double p1, double v1, double a1) {
         //see https://www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf for explanation
@@ -13,7 +14,6 @@ public class QuinticHermiteSpline implements ParametricOneVariableSpline {
         evalBasis54(v1);
         evalBasis55(p1);
     }
-
 
     private void evalBasis50(double p0) {
         a.coefficients[0] += p0;
@@ -66,7 +66,9 @@ public class QuinticHermiteSpline implements ParametricOneVariableSpline {
     public double dfdt(double t) {
         if (t < 0 || t > 1) {
             throw new IndexOutOfBoundsException("The parameter must be between 0 and 1.");
+        } else if (ddx == null) {
+            ddx = a.ddx();
         }
-        return a.ddx().eval(t);
+        return ddx.eval(t);
     }
 }
