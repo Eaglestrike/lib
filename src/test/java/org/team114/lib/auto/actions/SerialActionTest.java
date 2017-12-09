@@ -3,8 +3,6 @@ package org.team114.lib.auto.actions;
 import org.junit.*;
 import org.mockito.*;
 
-import static org.mockito.Mockito.times;
-
 import org.team114.lib.auto.Action;
 
 public class SerialActionTest {
@@ -22,5 +20,7 @@ public class SerialActionTest {
         inOrder.verify(spy1).run();
         inOrder.verify(spy2).run();
         inOrder.verify(spy3).run();
+
+        Mockito.verifyNoMoreInteractions(spy1, spy2, spy3);
     }
 }

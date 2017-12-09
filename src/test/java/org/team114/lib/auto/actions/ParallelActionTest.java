@@ -24,6 +24,7 @@ public class ParallelActionTest {
     public void testConcurrentExecution() {
         parallel.run();
         Mockito.verify(spy, times(3)).run();
+        Mockito.verifyNoMoreInteractions(spy);
     }
 }
 
