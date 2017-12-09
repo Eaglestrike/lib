@@ -1,5 +1,6 @@
 package org.team114.lib.auto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public abstract class CompositeAction extends Action {
     /**
      * A list of actions input when the class is constructed. The use of this list is defined
-     * by the subclass, but they will ordinarily be executed.
+     * by the subclass, but some or all of the actions will ordinarily be executed.
      */
     protected List<Action> actions;
 
@@ -21,9 +22,9 @@ public abstract class CompositeAction extends Action {
      * Create a new instance of this class from a list of actions.
      * @param actions a list of the action to be executed
      */
-    public CompositeAction(List<Action> actions) {
+    public CompositeAction(List<? extends Action> actions) {
 
-        this.actions = actions;
+        this.actions = new ArrayList<>(actions);
     }
 
     /**
@@ -33,5 +34,4 @@ public abstract class CompositeAction extends Action {
     public CompositeAction(Action... actions) {
         this(Arrays.asList(actions));
     }
-
 }
