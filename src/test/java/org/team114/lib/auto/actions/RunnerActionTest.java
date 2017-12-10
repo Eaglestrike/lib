@@ -1,14 +1,18 @@
 package org.team114.lib.auto.actions;
 
 import org.junit.*;
+import org.mockito.*;
+
+import static org.mockito.Mockito.times;
 
 public class RunnerActionTest {
 
-    @Test(expected = AssertionError.class)
+    private Runnable runnable = Mockito.mock(Runnable.class);
+
+    @Test
     public void testRun() {
-        RunnerAction run = new RunnerAction(() -> {
-            throw new AssertionError();
-        });
-        run.run();
+        runnable.run();
+        Mockito.verify(runnable, times(1)).run();
     }
+
 }
