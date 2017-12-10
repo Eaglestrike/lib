@@ -3,6 +3,7 @@ package org.team114.lib.subsystem;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class SubsystemManager {
      * Creates a new manager from a list of subsystems.
      * @param subsystems a {@code List} of all subsystems
      */
-    public SubsystemManager(List<Subsystem> subsystems) {
-        this.subsystems = subsystems;
+    public SubsystemManager(List<? extends Subsystem> subsystems) {
+        this.subsystems = new ArrayList<>(subsystems);
     }
     /**
      * Creates a new manager with subsystems, using a variadic constructor.
