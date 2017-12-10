@@ -31,7 +31,7 @@ public class ParallelAction extends CompositeAction {
      * Create a new instance of this class from a list of actions.
      * @param actions a list of the action to be executed
      */
-    public ParallelAction(List<Action> actions) {
+    public ParallelAction(List<? extends Action> actions) {
         super(actions);
     }
 

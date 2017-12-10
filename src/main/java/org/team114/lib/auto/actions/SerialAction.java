@@ -24,7 +24,7 @@ public class SerialAction extends CompositeAction {
      * Create a new instance of this class from a list of actions.
      * @param actions a list of the action to be executed
      */
-    public SerialAction(List<Action> actions) {
+    public SerialAction(List<? extends Action> actions) {
         super(actions);
     }
 
