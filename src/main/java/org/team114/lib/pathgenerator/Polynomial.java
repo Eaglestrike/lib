@@ -63,7 +63,7 @@ public class Polynomial {
      */
     public final int smartDegree() {
         int deg = degree;
-        while (Epsilon.epsilonEquals(coefficients[deg], 0)) {
+        while (deg > 0 && Epsilon.epsilonEquals(coefficients[deg], 0)) {
             deg--;
         }
         return deg;
