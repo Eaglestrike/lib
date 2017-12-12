@@ -5,8 +5,15 @@ import org.mockito.*;
 
 import org.team114.lib.auto.Action;
 
+/**
+ * Tests for {@link SerialAction}.
+ */
 public class SerialActionTest {
 
+    /**
+     * Tests that actions provided to SerialAction are run in the correct order. Also
+     * checks that they are not run more times than is necessary.
+     */
     @Test
     public void testSerialRun() {
         Action spy1 = Mockito.mock(Action.class);

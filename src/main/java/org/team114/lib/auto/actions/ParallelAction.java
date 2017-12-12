@@ -52,6 +52,7 @@ public class ParallelAction extends CompositeAction {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException e ) {
+                //TODO error logging
                 System.out.println("Exception in parallel execution: " + e.getMessage());
             }
         }

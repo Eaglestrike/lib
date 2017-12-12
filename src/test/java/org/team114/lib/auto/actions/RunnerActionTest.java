@@ -6,6 +6,9 @@ import org.team114.lib.auto.Action;
 
 import static org.mockito.Mockito.times;
 
+/**
+ * Tests for {@link RunnerAction}.
+ */
 public class RunnerActionTest {
 
     private Runnable runnable = Mockito.mock(Runnable.class);
