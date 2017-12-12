@@ -7,6 +7,10 @@ public class PolynomialSpline extends Polynomial implements ParametricOneVariabl
     public PolynomialSpline(double[] a) {
         super(a);
     }
+    
+    public PolynomialSpline(double[] a, boolean copy) {
+        super(a, copy);
+    }
 
     @Override
     public double getValueAt(double t) {

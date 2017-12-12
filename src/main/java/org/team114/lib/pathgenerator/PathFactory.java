@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-import org.ejml.data.DMatrixRBlock;
+import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.factory.LinearSolverFactory_DDRM;
 import org.ejml.interfaces.linsol.LinearSolverDense;
-
 import org.team114.lib.util.Epsilon;
 
 
 public class PathFactory {
     /**
      * Creates a cubic spline path through any number of points.
-     * @param points A list of y-values to pass throughm one unit apart.
+     * @param points A list of y-values to pass through one unit apart.
      * @param ddx0 The derivative of the curve at the start.
      * @param ddx1 The derivative of the curve at the end.
      * @return A list of containing splines, meant to be placed end-to-end, even though each is valid for t = [0,1].
@@ -51,8 +50,8 @@ public class PathFactory {
         int numSplines = points.size()-1;
         int matrixDim = polynomialOrder * numSplines;
 
-        DMatrixRBlock coeffMatrix = new DMatrixRBlock(matrixDim, matrixDim);
-        DMatrixRBlock answerMatrix = new DMatrixRBlock(matrixDim, 1);
+        DMatrixRMaj coeffMatrix = new DMatrixRMaj(matrixDim, matrixDim);
+        DMatrixRMaj answerMatrix = new DMatrixRMaj(matrixDim, 1);
 
         /*
          * For future coders:
@@ -142,14 +141,15 @@ public class PathFactory {
         }
 
         //now we have the matrix, solve it
-        DMatrixRBlock outputMatrix = new DMatrixRBlock(matrixDim, 1);
+        DMatrixRMaj outputMatrix = new DMatrixRMaj(matrixDim, 1);
         LinearSolverDense solver = LinearSolverFactory_DDRM.general(matrixDim, matrixDim);
         if( !solver.setA(coeffMatrix) ) {
             throw new IllegalArgumentException("Singular matrix");
         }
-        if( solver.quality() <= Epsilon.EPSILON) {
-            throw new IllegalArgumentException("Nearly singular matrix");
-        }
+        //Not sure why this would be a problem. It works fine on its own.
+//        if( solver.quality() <= Epsilon.EPSILON) {
+//            throw new IllegalArgumentException("Nearly singular matrix");
+//        }
 
         solver.setA(coeffMatrix);
         solver.solve(answerMatrix,outputMatrix);
@@ -159,9 +159,9 @@ public class PathFactory {
         double[] a = new double[polynomialOrder];
         for (int i = 0; i < numSplines; i++) {
             for (int j = 0; j < polynomialOrder; j++) {
-                a[j] = answerMatrix.get(i*polynomialOrder + j, 0);
+                a[j] = outputMatrix.get(i*polynomialOrder + j, 0);
             }
-            splines.set(i, new PolynomialSpline(a));
+            splines.add(new PolynomialSpline(a));
         }
 
         return splines;

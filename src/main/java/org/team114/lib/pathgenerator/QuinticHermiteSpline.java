@@ -1,5 +1,5 @@
 package org.team114.lib.pathgenerator;
-import java.lang.Math;
+
 public class QuinticHermiteSpline implements ParametricOneVariableSpline {
     private Polynomial a;
     private Polynomial ddx = null;

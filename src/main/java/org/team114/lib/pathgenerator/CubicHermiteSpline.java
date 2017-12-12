@@ -1,8 +1,5 @@
 package org.team114.lib.pathgenerator;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class CubicHermiteSpline extends PolynomialSpline {
     public CubicHermiteSpline(double[] a) {
         super(a);
