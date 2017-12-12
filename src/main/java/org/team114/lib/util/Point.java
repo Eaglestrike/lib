@@ -1,19 +1,34 @@
 package org.team114.lib.util;
 
 /**
- * Just a point with an x and y.
+ * A two-dimensional point consisting of the ordered pair (x,y).
  */
 public class Point {
 
     /**
      * X position of this point.
      */
-    public double x;
-    
+    private double x;
+
+    /**
+     * Gets the x position of the point.
+     * @return the x coordinate value
+     */
+    public double x() {
+        return x;
+    }
     /**
      * Y position of this point.
      */
-    public double y;
+    private double y;
+
+    /**
+     * Gets the Y position of the point.
+     * @return the y coordinate value
+     */
+    public double y() {
+        return y;
+    }
     
     /**
      * Makes a point at (x, y).
@@ -24,10 +39,18 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+
+    /**
+     * Makes a copy of a Point
+     * @param copy the Point to copy
+     */
+    public Point(Point copy) {
+        this(copy.x(), copy.y());
+    }
     
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "Point (" + x + ", " + y + ")";
     }
     
 }
