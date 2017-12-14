@@ -2,9 +2,6 @@ package org.team114.lib.auto.actions;
 
 import java.util.List;
 
-import org.team114.lib.auto.Action;
-import org.team114.lib.auto.CompositeAction;
-
 /**
  * An action that runs actions in sequence. This is useful if several actions need to be run where one only
  * one is possible (e.g. to set a sequence of actions in a {@link ParallelAction}). It should be used sparingly, and

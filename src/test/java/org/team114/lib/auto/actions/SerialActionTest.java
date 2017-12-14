@@ -3,8 +3,6 @@ package org.team114.lib.auto.actions;
 import org.junit.*;
 import org.mockito.*;
 
-import org.team114.lib.auto.Action;
-
 /**
  * Tests for {@link SerialAction}.
  */

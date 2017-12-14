@@ -3,8 +3,6 @@ package org.team114.lib.auto.actions;
 import org.junit.*;
 import org.mockito.Mockito;
 
-import org.team114.lib.auto.Action;
-
 import java.util.concurrent.CountDownLatch;
 
 import static org.mockito.Mockito.times;

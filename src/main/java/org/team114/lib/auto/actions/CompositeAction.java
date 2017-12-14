@@ -1,4 +1,4 @@
-package org.team114.lib.auto;
+package org.team114.lib.auto.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
