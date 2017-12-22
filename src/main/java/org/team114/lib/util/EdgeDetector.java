@@ -11,11 +11,11 @@ public class EdgeDetector {
      */
     public enum EdgeType {
         /**
-         * True -> false.
+         * True -&gt; false.
          */
         FALLING,
         /**
-         * False -> true.
+         * False -&gt; true.
          */
         RISING,
         /**
@@ -37,6 +37,7 @@ public class EdgeDetector {
 
     /**
      * Updates the latest known value by calling the lambda.
+     * @return new lastValue
      */
     public boolean update() {
         try {
@@ -49,6 +50,7 @@ public class EdgeDetector {
 
     /**
      * Determines the type of change in the tracked function.
+     * @return an edge type representing the change
      */
     public EdgeType getEdge() {
         boolean newValue;
@@ -76,21 +78,24 @@ public class EdgeDetector {
     }
 
     /**
-     * Checks whether or not the tracked function has changed from true to false.
+     * Checks if the function is falling.
+     * @return  whether or not the tracked function has changed from true to false
      */
     public boolean falling() {
         return getEdge() == EdgeType.FALLING;
     }
 
     /**
-     * Checks whether or not the tracked function has changed from false to true.
+     * Checks if the function is rising.
+     * @return whether or not the tracked function has changed from false to true
      */
     public boolean rising() {
         return getEdge() == EdgeType.RISING;
     }
 
     /**
-     * Checks whether or not the tracked function is stable.
+     * Checks if the function is flat.
+     * @return whether or not the tracked function is stable
      */
     public boolean flatlining() {
         return getEdge() == EdgeType.FLAT;
