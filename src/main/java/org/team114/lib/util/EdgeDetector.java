@@ -2,19 +2,40 @@ package org.team114.lib.util;
 
 import java.util.concurrent.Callable;
 
+/**
+ * Detector for changes in the status of a boolean function.
+ */
 public class EdgeDetector {
+    /**
+     * Enum representing the type of change.
+     */
     public enum EdgeType {
-        FLAT, RISING, FALLING
+        /**
+         * True -> false.
+         */
+        FALLING,
+        /**
+         * False -> true.
+         */
+        RISING,
+        /**
+         * No change.
+         */
+        FLAT
     }
 
     private Callable<Boolean> lambda;
     private boolean lastValue = false;
 
+    /**
+     * Creates an edge detector from a function to track.
+     * @param lambda boolean function to detect changes in
+     */
     public EdgeDetector(Callable<Boolean> lambda) {
         this.lambda = lambda;
     }
 
-    /*
+    /**
      * Updates the latest known value by calling the lambda.
      */
     public boolean update() {
@@ -26,6 +47,9 @@ public class EdgeDetector {
         return lastValue;
     }
 
+    /**
+     * Determines the type of change in the tracked function.
+     */
     public EdgeType getEdge() {
         boolean newValue;
         try {
@@ -38,25 +62,36 @@ public class EdgeDetector {
         this.lastValue = newValue;
 
         // true -> false
-        if (lastValue && !newValue)
+        if (lastValue && !newValue) {
             return EdgeType.FALLING;
+        }
 
         // false -> true
-        if (!lastValue && newValue)
+        if (!lastValue && newValue) {
             return EdgeType.RISING;
+        }
 
         // (false -> false) | (true -> true)
         return EdgeType.FLAT;
     }
 
+    /**
+     * Checks whether or not the tracked function has changed from true to false.
+     */
     public boolean falling() {
         return getEdge() == EdgeType.FALLING;
     }
 
+    /**
+     * Checks whether or not the tracked function has changed from false to true.
+     */
     public boolean rising() {
         return getEdge() == EdgeType.RISING;
     }
 
+    /**
+     * Checks whether or not the tracked function is stable.
+     */
     public boolean flatlining() {
         return getEdge() == EdgeType.FLAT;
     }
