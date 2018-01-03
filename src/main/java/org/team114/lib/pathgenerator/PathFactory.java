@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.factory.LinearSolverFactory_DDRM;
 import org.ejml.interfaces.linsol.LinearSolverDense;
-import org.team114.lib.util.Epsilon;
+import org.team114.lib.util.Point;
 
 
 public class PathFactory {
@@ -142,14 +142,14 @@ public class PathFactory {
 
         //now we have the matrix, solve it
         DMatrixRMaj outputMatrix = new DMatrixRMaj(matrixDim, 1);
-        LinearSolverDense solver = LinearSolverFactory_DDRM.general(matrixDim, matrixDim);
+        LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.general(matrixDim, matrixDim);
         if( !solver.setA(coeffMatrix) ) {
             throw new IllegalArgumentException("Singular matrix");
         }
         //Not sure why this would be a problem. It works fine on its own.
-//        if( solver.quality() <= Epsilon.EPSILON) {
-//            throw new IllegalArgumentException("Nearly singular matrix");
-//        }
+        //        if( solver.quality() <= Epsilon.EPSILON) {
+        //            throw new IllegalArgumentException("Nearly singular matrix");
+        //        }
 
         solver.setA(coeffMatrix);
         solver.solve(answerMatrix,outputMatrix);
@@ -180,5 +180,49 @@ public class PathFactory {
             deg--;
         }
         return total;
+    }
+
+    /**
+     * Creates a path based on a list of points using CubicC2Path().
+     * @param points
+     * @param v0 The initial velocity
+     * @param vf The final velocity
+     * @param a0 The initial angle
+     * @param af The final angle
+     */
+    public static Path generateC2Path(List<Point> points, double v0, double vf, double a0, double af) {
+        ArrayList<Double> x = new ArrayList<Double>();
+        ArrayList<Double> y = new ArrayList<Double>();
+
+        for(Point p : points) {
+            x.add(p.x());
+            y.add(p.y());
+        }
+
+        return new Path(PathFactory.CubicC2Path(x, v0 * Math.cos(a0), vf * Math.cos(af)),
+                PathFactory.CubicC2Path(y, v0 * Math.sin(a0), vf * Math.sin(af)));
+    }
+
+    /**
+     * Creates a path based on a list of points using SmoothPath().
+     * @see PathFactory#SmoothPath(List, List, List)
+     * @param points A list of points to pass through.
+     * @param ddxAtStart A list of endpoint derivatives for start of the x component of the spline.
+     * @param ddyAtStart A list of endpoint derivatives for start of the y component of the spline.
+     * @param ddxAtEnd A list of endpoint derivatives for end of the x component of the spline.
+     * @param ddyAtEnd A list of endpoint derivatives for end of the y component of the spline.
+     * @return A Path object generated from those points and derivatives.
+     */
+    public static Path generatePath(List<Point> points, List<Double> ddxAtStart, List<Double> ddyAtStart, List<Double> ddxAtEnd, List<Double> ddyAtEnd) {
+        ArrayList<Double> x = new ArrayList<Double>();
+        ArrayList<Double> y = new ArrayList<Double>();
+
+        for(Point p : points) {
+            x.add(p.x());
+            y.add(p.y());
+        }
+
+        return new Path(PathFactory.SmoothPath(x, ddxAtStart, ddxAtEnd),
+                PathFactory.SmoothPath(y, ddyAtStart, ddyAtEnd));
     }
 }

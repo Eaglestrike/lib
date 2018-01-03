@@ -80,4 +80,8 @@ public class Polynomial {
         }
         return new Polynomial(g);
     }
+    
+    public double[] getCoefficients() {
+        return coefficients.clone();
+    }
 }
