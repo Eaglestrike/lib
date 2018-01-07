@@ -88,8 +88,37 @@ public class Path {
         return new Point(xComponents.get(component).dfdt(t), yComponents.get(component).dfdt(t));
     }
 
+    /**
+     * Gets the length of the spline. This is done by returning the size of the component list.
+     * @return The spline length.
+     */
     public double length() {
         return xComponents.size();
+    }
+    
+    /**
+     * Gets a point along a normal line based at t down the spline. If n is positive then the
+     * normal line is used which is on the right side of the direction of the derivative. If
+     * n is negative, the other side is used.
+     * @param t is the base of the normal line.
+     * @param n is the length of the normal line.
+     * @return The point along the normal line
+     */
+    public Point getPointAlongNormal(double t, double n) {
+        Point base = getPointAtT(t);
+        Point dfdt = dfdt(t);
+        
+        if(dfdt.x() == 0 && dfdt.y() == 0)
+            throw new RuntimeException("Can not find a normal line from a derivative of 0.");
+        
+        double h = Math.sqrt(dfdt.x() * dfdt.x() + dfdt.y() * dfdt.y());
+        double angle = Math.acos(dfdt.x() / h);
+        
+        if(Math.asin(dfdt.y() / h) < 0) //correct angle
+            angle = 2 * Math.PI - angle;
+        angle -= Math.PI / 2; // add 90 degrees
+        
+        return new Point(base.x() + n * Math.cos(angle), base.y() + n * Math.sin(angle));
     }
 
     /**
