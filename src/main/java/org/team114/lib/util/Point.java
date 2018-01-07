@@ -48,6 +48,15 @@ public class Point {
         this(copy.x(), copy.y());
     }
     
+    /**
+     * Returns the distance to another point
+     * @param p is the point get the distance to.
+     * @return The distance.
+     */
+    public double dist(Point p) {
+        return Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
+    }
+    
     @Override
     public String toString() {
         return "Point (" + x + ", " + y + ")";
