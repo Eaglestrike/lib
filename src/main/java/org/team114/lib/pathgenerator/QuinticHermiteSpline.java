@@ -17,45 +17,45 @@ public class QuinticHermiteSpline implements ParametricOneVariableSpline {
 
     private void evalBasis50(double p0) {
         a.coefficients[0] += p0;
-        a.coefficients[3] += -10*p0;
-        a.coefficients[4] += 14*p0;
-        a.coefficients[5] += -6*p0;
+        a.coefficients[3] += -10 * p0;
+        a.coefficients[4] += 14 * p0;
+        a.coefficients[5] += -6 * p0;
     }
 
     private void evalBasis51(double v0) {
         a.coefficients[1] += v0;
-        a.coefficients[3] += -6*v0;
-        a.coefficients[4] += 8*v0;
-        a.coefficients[5] += -3*v0;
+        a.coefficients[3] += -6 * v0;
+        a.coefficients[4] += 8 * v0;
+        a.coefficients[5] += -3 * v0;
     }
 
     private void evalBasis52(double a0) {
-        a.coefficients[2] += 0.5*a0;
-        a.coefficients[3] += -1.5*a0;
-        a.coefficients[4] += 1.5*a0;
-        a.coefficients[5] += -0.5*a0;
+        a.coefficients[2] += 0.5 * a0;
+        a.coefficients[3] += -1.5 * a0;
+        a.coefficients[4] += 1.5 * a0;
+        a.coefficients[5] += -0.5 * a0;
     }
 
     private void evalBasis53(double a1) {
-        a.coefficients[3] += 0.5*a1;
+        a.coefficients[3] += 0.5 * a1;
         a.coefficients[4] += -a1;
-        a.coefficients[5] += 0.5*a1;
+        a.coefficients[5] += 0.5 * a1;
     }
 
     private void evalBasis54(double v1) {
-        a.coefficients[3] += -4*v1;
-        a.coefficients[4] += 7*v1;
-        a.coefficients[5] += -3*v1;
+        a.coefficients[3] += -4 * v1;
+        a.coefficients[4] += 7 * v1;
+        a.coefficients[5] += -3 * v1;
     }
 
     private void evalBasis55(double p1) {
-        a.coefficients[3] += 10*p1;
-        a.coefficients[4] += -15*p1;
-        a.coefficients[5] += 6*p1;
+        a.coefficients[3] += 10 * p1;
+        a.coefficients[4] += -15 * p1;
+        a.coefficients[5] += 6 * p1;
     }
 
     @Override
-    public double getValueAt(double t) {
+    public double at(double t) {
         if (t < 0 || t > 1) {
             throw new IndexOutOfBoundsException("The parameter must be between 0 and 1.");
         }

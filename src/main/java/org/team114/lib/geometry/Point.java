@@ -32,8 +32,8 @@ public class Point {
     
     /**
      * Makes a point at (x, y).
-     * @param x
-     * @param y
+     * @param x the x position
+     * @param y the y position
      */
     public Point(double x, double y) {
         this.x = x;

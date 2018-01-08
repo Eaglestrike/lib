@@ -24,12 +24,15 @@ public class Path {
     /**
      * Creates a path based on pre-generated lists of of the x and y spline components. This method
      * is not recommended however and if possible the PathFactory should be used.
-     * @param xComponents to use
-     * @param yComponents to use
+     * @param xComponents list of x components to use
+     * @param yComponents list of y components to use
      * @see PathFactory
      */
     public Path(List<PolynomialSpline> xComponents, List<PolynomialSpline> yComponents) {
-        assert(xComponents.size() == yComponents.size());
+        if (xComponents.size() != yComponents.size()) {
+            throw new IllegalArgumentException();
+        }
+
 
         this.xComponents = xComponents;
         this.yComponents = yComponents;
@@ -42,10 +45,13 @@ public class Path {
      * @param coefficients coefficients from the spline viewer
      */
     public Path(double[][][] coefficients) {
-        xComponents = new ArrayList<PolynomialSpline>();
-        yComponents = new ArrayList<PolynomialSpline>();
-        for(double[][] part : coefficients) {
-            assert(part.length == 2);
+        xComponents = new ArrayList<>();
+        yComponents = new ArrayList<>();
+
+        for (double[][] part : coefficients) {
+            if (part.length != 2) {
+                throw new IllegalArgumentException();
+            }
             xComponents.add(new PolynomialSpline(part[0]));
             yComponents.add(new PolynomialSpline(part[1]));
         }
@@ -53,7 +59,7 @@ public class Path {
 
     /**
      * Gets the point on path at t.
-     * @param t is how far along the path to get the point, measured from n through n+1 for each spline
+     * @param t how far along the path to get the point, measured from n through n+1 for each spline
      *          segment, beginning with the 0th.
      * @return The Point at t.
      */
@@ -62,26 +68,29 @@ public class Path {
             throw new IndexOutOfBoundsException("The parameter must be between 0 and " + length() + ": " + t);
         }
         int component = (int) t;
-        if(t == length()) { //Prevent out of bounds
+        //Prevent out of bounds
+        if (t == length()) {
             t = 1;
             component = (int) (length() - 1);
         } else {
             t = t - component;
         }
-        return new Point(xComponents.get(component).getValueAt(t), yComponents.get(component).getValueAt(t));
+        return new Point(xComponents.get(component).at(t),
+                yComponents.get(component).at(t));
     }
 
     /**
      * Gets the x and y derivatives of the path at a point and returns them in point form.
-     * @param t is how far along the path to get the point.
+     * @param t how far along the path to get the point.
      * @return The Point containing the x and y derivatives.
      */
     public Point dydx(double t) {
         if (t < 0 || t > length()) {
-            throw new IndexOutOfBoundsException("The parameter must be between 0 and " + length() + ": " + t);
+            throw new IndexOutOfBoundsException("The parameter must be between 0 and " +
+                    length() + ": " + t);
         }
         int component = (int) t;
-        if(t == length()) { //Prevent out of bounds
+        if (t == length()) { //Prevent out of bounds
             t = 1;
             component = (int) (length() - 1);
         } else {
@@ -95,17 +104,17 @@ public class Path {
      * @return The spline length.
      */
     public double length() {
-        assert(xComponents.size() == yComponents.size());
+        assert xComponents.size() == yComponents.size();
         return xComponents.size();
     }
     
     /**
      * Gets a point along a normal line based at t down the spline. If n is negative the point will be
      * 90 degrees clockwise of the direction of the derivative line. If positive, it will be 90 degrees
-     * counterclockwise. This can also be interpreted as right (when facing towards increasing t) if positive
-     * and left when negative.
-     * @param t is the location on the Path to extrapolate from.
-     * @param n is the distance from the point to the path along the normal line.
+     * counterclockwise. This can also be interpreted as right (when facing towards increasing t)
+     * if positive and left when negative.
+     * @param t the location on the Path to extrapolate from.
+     * @param n the distance from the point to the path along the normal line.
      * @return The point along the normal line
      */
     public Point getPointAlongNormal(double t, double n) {
@@ -123,8 +132,8 @@ public class Path {
      * @return A list of all of the end points of the parametric components.
      */
     public List<Point> generatePointList() {
-        ArrayList<Point> points = new ArrayList<Point>();
-        for(int i = 0; i <= length(); i++)
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 0; i <= length(); i++)
             points.add(getPointAtT(i));
         return points;
     }

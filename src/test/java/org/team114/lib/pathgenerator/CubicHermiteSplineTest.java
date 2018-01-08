@@ -11,18 +11,18 @@ public class CubicHermiteSplineTest {
             CubicHermiteSpline b = new CubicHermiteSpline(new double[]{0, 3, 5, 0});
             CubicHermiteSpline c = new CubicHermiteSpline(new double[]{0, 0, 0, 0});
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
 
         try {
             CubicHermiteSpline a = new CubicHermiteSpline(new double[]{7, 3, 5});
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
             CubicHermiteSpline a = new CubicHermiteSpline(new double[]{7, 3, 5, 19, 21});
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
     }

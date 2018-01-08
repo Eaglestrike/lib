@@ -5,7 +5,8 @@ import org.team114.lib.util.Epsilon;
 import java.util.Arrays;
 
 /**
- *  A class representing a polynomial of arbitrary degree, allowing for evaluation and differentiation.
+ *  A class representing a polynomial of arbitrary degree, allowing for evaluation and
+ *  differentiation.
  */
 public class Polynomial {
     protected int degree;
@@ -24,7 +25,7 @@ public class Polynomial {
             coefficients = a;
         }
 
-        degree = coefficients.length-1;
+        degree = coefficients.length - 1;
     }
 
     /**
@@ -74,9 +75,9 @@ public class Polynomial {
      * @return A new polynomial representing the derivative of this one.
      */
     public Polynomial ddx() {
-        double[] g = new double[this.coefficients.length-1];
+        double[] g = new double[this.coefficients.length - 1];
         for (int i = 1; i < coefficients.length; i++) {
-            g[i-1] = coefficients[i] * i;
+            g[i - 1] = coefficients[i] * i;
         }
         return new Polynomial(g);
     }

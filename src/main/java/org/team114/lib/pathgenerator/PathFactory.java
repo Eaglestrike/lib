@@ -21,7 +21,8 @@ public class PathFactory {
      * @param points A list of y-values to pass through one unit apart.
      * @param ddxStart The derivative of the curve at the start.
      * @param ddxEnd The derivative of the curve at the end.
-     * @return A list of containing splines, meant to be placed end-to-end, even though each is valid for t = [0,1].
+     * @return A list of containing splines, meant to be placed end-to-end, even though each is
+     * valid for t = [0, 1].
      */
     public static ArrayList<PolynomialSpline> CubicC2Spline(List<Double> points, double ddxStart, double ddxEnd) {
         return SmoothSpline(points, Arrays.asList(ddxStart), Arrays.asList(ddxEnd));
@@ -29,27 +30,32 @@ public class PathFactory {
 
     /**
      * Creates a smooth spline curve between any number of points.
-     * As the number of endpoint derivatives provided increases, so does the continuity of the overall spline, as does the degree of the internal polynomials.
-     * Runs in O(m^3 * n^3) time, where n is the number of points and m the number of endpoint derivatives provided.
+     * As the number of endpoint derivatives provided increases, so does the continuity of the
+     * overall spline, as does the degree of the internal polynomials. Runs in O(m^3 * n^3) time,
+     * where n is the number of points and m the number of endpoint derivatives provided.
      *
      * @param points A list of y-values to pass through, one unit apart.
      * @param ddxAtStart A list of endpoint derivatives, the 0th element is the 1st derivative, the 1st the 2nd, etc.
      * @param ddxAtEnd Same as ddxAtStart, but for the end of the curve.
      * @return A list of containing splines, meant to be placed end-to-end, even though each is valid for t = [0,1].
      */
-    public static ArrayList<PolynomialSpline> SmoothSpline(List<Double> points, List<Double> ddxAtStart, List<Double> ddxAtEnd) {
-        assert(ddxAtStart.size() == ddxAtEnd.size());
+    public static ArrayList<PolynomialSpline> SmoothSpline(List<Double> points, List<Double>
+            ddxAtStart, List<Double> ddxAtEnd) {
+
+        if (ddxAtStart.size() != ddxAtEnd.size()) {
+            throw new IllegalArgumentException();
+        }
 
         /*
-         * a middle segment has 2 constraints for C0 continuity, and j for up to Cj continuity
-         * the first segment has 2 for C0 and n control derivatives
-         * the end segment has 2 for C0, j for up to Cj continuity, and n control derivatives.
-         * this gives 2 + j = order (middle segments) and 4 + 2n + j = 2*order (first and end segments)
-         * solving gives order = 2 + 2n, so we ascertain polyOrder based on the length of passed control Lists
+         * A middle segment has 2 constraints for C0 continuity, and j for up to Cj continuity.
+         * The first segment has 2 for C0 and n control derivatives. The end segment has 2 for C0,
+         * j for up to Cj continuity, and n control derivatives. This gives 2 + j = order (middle
+         * segments) and 4 + 2n + j = 2 * order (first and end segments) solving gives an order of
+         * 2 + 2n, so we ascertain polyOrder based on the length of passed control Lists.
          */
 
         int numControlDerivatives = ddxAtEnd.size();
-        int polynomialOrder = 2 + 2*numControlDerivatives; // order is the number of terms
+        int polynomialOrder = 2 + 2 * numControlDerivatives; // order is the number of terms
         int numDerivativeContinuityConstraints = polynomialOrder - 2;
 
         int numSplines = points.size()-1;
@@ -61,16 +67,16 @@ public class PathFactory {
         /*
          * For future coders:
          * The spline interpolation solves a large linear system of constraints:
-         *  A*x = b, where A is a n*n matrix and x and b are 1*n (vertical) vectors.
+         * A * x = b, where A is a n * n matrix and x and b are 1*n (vertical) vectors.
          * The format of the "x" matrix is as follows:
          *  | a_0,0 |
          *  | a_0,1 |
          *  | a_0,2 |
-         *  | .... |
+         *  | ....  |
          *  | a_0,d |
          *  | a_1,0 |
          *  | a_1,1 |
-         *  | .... |
+         *  | ....  |
          *  | a_n,d | <-- this is "a", with subscripts "n" and "d" not the word "and"
          * where d is the degree of the polynomial splines and n is the number of splines.
          * Each term of spline a_n is of the form (a_n,i)*x^i
@@ -117,14 +123,15 @@ public class PathFactory {
             answerMatrix.set(rowOffset, 0, points.get(currentSpline+1));
             rowOffset++;
 
-            //match the "deg'th" derivative at 0 with the last splines at 1
-            for(int deg = 1; deg <= numDerivativeContinuityConstraints; deg++) {
+            // match the "deg'th" derivative at 0 with the last splines at 1
+            for (int deg = 1; deg <= numDerivativeContinuityConstraints; deg++) {
                 //add this splines degth derivative
                 coeffMatrix.set(rowOffset, columnOffset+deg, ddxCoeff(deg, deg));
 
                 // subtract the last splines degth derivative
                 for (int power = 0; power < polynomialOrder; power++) {
-                    coeffMatrix.set(rowOffset, columnOffset-polynomialOrder+power, -ddxCoeff(power, deg));
+                    coeffMatrix.set(rowOffset, columnOffset-polynomialOrder+power,
+                            -ddxCoeff(power, deg));
                 }
 
                 // set to 0
@@ -147,11 +154,11 @@ public class PathFactory {
         //now we have the matrix, solve it
         DMatrixRMaj outputMatrix = new DMatrixRMaj(matrixDim, 1);
         LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.general(matrixDim, matrixDim);
-        if( !solver.setA(coeffMatrix) ) {
+        if (!solver.setA(coeffMatrix)) {
             throw new IllegalArgumentException("Singular matrix");
         }
-        //Not sure why this would be a problem. It works fine on its own.
-        //        if( solver.quality() <= Epsilon.EPSILON) {
+        // Not sure why this would be a problem. It works fine on its own.
+        //        if (solver.quality() <= Epsilon.EPSILON) {
         //            throw new IllegalArgumentException("Nearly singular matrix");
         //        }
 
@@ -172,7 +179,7 @@ public class PathFactory {
     }
 
     /**
-     * returns the coefficient in the deg'th derivative of the monomial x^exp
+     * Returns the coefficient in the deg'th derivative of the monomial x^exp.
      * @param exp
      * @param deg
      */
@@ -190,25 +197,28 @@ public class PathFactory {
      * Creates a path based on a list of points using CubicC2Spline().
      * Velocity in this context refers to the velocity of the curve, or the spatial
      * movement caused by increasing the parameter of the curve.
-     * @param points
-     * @param v0 The initial velocity
-     * @param vf The final velocity
-     * @param a0 The initial angle in radians
-     * @param af The final angle in radians
+     * @param points list of points to build from
+     * @param v0 initial velocity
+     * @param vf final velocity
+     * @param a0 initial angle in radians
+     * @param af final angle in radians
+     * @return The new path.
      */
     public static Path generateC2Path(List<Point> points, double v0, double vf, double a0, double af) {
         final double rootOneHalf = Math.sqrt(1/2);
 
-        ArrayList<Double> x = new ArrayList<Double>();
-        ArrayList<Double> y = new ArrayList<Double>();
+        ArrayList<Double> x = new ArrayList<>();
+        ArrayList<Double> y = new ArrayList<>();
 
-        for(Point p : points) {
+        for (Point p : points) {
             x.add(p.x());
             y.add(p.y());
         }
 
-        return new Path(PathFactory.CubicC2Spline(x, rootOneHalf * v0 * Math.cos(a0), rootOneHalf * vf * Math.cos(af)),
-                PathFactory.CubicC2Spline(y, rootOneHalf * v0 * Math.sin(a0), rootOneHalf * vf * Math.sin(af)));
+        return new Path(PathFactory.CubicC2Spline(x, rootOneHalf * v0 * Math.cos(a0), rootOneHalf *
+                vf * Math.cos(af)),
+                PathFactory.CubicC2Spline(y, rootOneHalf * v0 * Math.sin(a0), rootOneHalf * vf *
+                        Math.sin(af)));
     }
 
     /**
@@ -221,11 +231,12 @@ public class PathFactory {
      * @param ddyAtEnd A list of endpoint derivatives for end of the y component of the spline.
      * @return A Path object generated from those points and derivatives.
      */
-    public static Path generatePath(List<Point> points, List<Double> ddxAtStart, List<Double> ddyAtStart, List<Double> ddxAtEnd, List<Double> ddyAtEnd) {
-        ArrayList<Double> x = new ArrayList<Double>();
-        ArrayList<Double> y = new ArrayList<Double>();
+    public static Path generatePath(List<Point> points, List<Double> ddxAtStart, List<Double>
+            ddyAtStart, List<Double> ddxAtEnd, List<Double> ddyAtEnd) {
+        ArrayList<Double> x = new ArrayList<>();
+        ArrayList<Double> y = new ArrayList<>();
 
-        for(Point p : points) {
+        for (Point p : points) {
             x.add(p.x());
             y.add(p.y());
         }

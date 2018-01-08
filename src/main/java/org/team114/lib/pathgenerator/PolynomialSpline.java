@@ -4,6 +4,7 @@ package org.team114.lib.pathgenerator;
  * A polynomial that is also usable as a spline.
  */
 public class PolynomialSpline extends Polynomial implements ParametricOneVariableSpline {
+
     public PolynomialSpline(double[] a) {
         super(a);
     }
@@ -13,7 +14,7 @@ public class PolynomialSpline extends Polynomial implements ParametricOneVariabl
     }
 
     @Override
-    public double getValueAt(double t) {
+    public double at(double t) {
         if (t < 0 || t > 1) {
             throw new IndexOutOfBoundsException("The parameter must be between 0 and 1.");
         }

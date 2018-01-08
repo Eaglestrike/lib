@@ -10,34 +10,34 @@ public class PolynomialSplineTest {
 
         //for values
         try {
-            p.getValueAt(0);
-            p.getValueAt(0.5);
-            p.getValueAt(1);
+            p.at(0);
+            p.at(0.5);
+            p.at(1);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
 
         try {
-            p.getValueAt(-0.1);
-            Assert.assertTrue(false);
-        } catch (Exception e) {
-        }
-
-        try {
-            p.getValueAt(1.1);
-            Assert.assertTrue(false);
+            p.at(-0.1);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
-            p.getValueAt(5);
-            Assert.assertTrue(false);
+            p.at(1.1);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
-            p.getValueAt(-5);
-            Assert.assertTrue(false);
+            p.at(5);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+
+        try {
+            p.at(-5);
+            Assert.fail();
         } catch (Exception e) {
         }
 
@@ -47,30 +47,30 @@ public class PolynomialSplineTest {
             p.dfdt(0.5);
             p.dfdt(1);
         } catch (Exception e) {
-            Assert.assertTrue(false);
+            Assert.fail();
         }
 
         try {
             p.dfdt(-0.1);
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(1.1);
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(5);
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(-5);
-            Assert.assertTrue(false);
+            Assert.fail();
         } catch (Exception e) {
         }
     }
