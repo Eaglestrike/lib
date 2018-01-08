@@ -1,4 +1,4 @@
-# Team 144 Library
+# Team 114 Library
 
 Team 114's standard utility library.
 
@@ -39,7 +39,7 @@ right-hand side of the screen. This is where you can run tasks, etc.
 Find and run the `build` task. If it runs successfully, everything is set up correctly!
 Congratulations.
 
-## Project style
+## Project style and Conventions
 
 We attempt to follow the
 [Google Java Style guide](https://google.github.io/styleguide/javaguide.html),
@@ -47,6 +47,10 @@ except that:
 
 1. We use 4 spaces for indents, in contravention of section
 [4.2](https://google.github.io/styleguide/javaguide.html).
+
+Unless otherwise stated, coordinate systems should be right-handed,
+angles should be in radians, and positive angles/rotation are
+counter-clockwise.
 
 ## Copyright
 
