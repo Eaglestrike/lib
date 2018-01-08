@@ -1,4 +1,4 @@
-package org.team114.lib.util;
+package org.team114.lib.geometry;
 
 /**
  * A two-dimensional point consisting of the ordered pair (x,y).
@@ -55,6 +55,10 @@ public class Point {
      */
     public double dist(Point p) {
         return Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
+    }
+
+    public double hyp2(Point p) {
+        return Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2);
     }
     
     @Override
