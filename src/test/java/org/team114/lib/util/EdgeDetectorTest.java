@@ -2,6 +2,8 @@ package org.team114.lib.util;
 
 import org.junit.*;
 
+import static org.junit.Assert.*;
+
 /**
  * Tests for {@link EdgeDetector}.
  */
@@ -22,22 +24,22 @@ public class EdgeDetectorTest  {
         value = false;
         edgeDetector.update();
         value = true;
-        Assert.assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.RISING);
+        assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.RISING);
 
         value = true;
         edgeDetector.update();
         value = false;
-        Assert.assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FALLING);
+        assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FALLING);
 
         value = false;
         edgeDetector.update();
         value = false;
-        Assert.assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FLAT);
+        assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FLAT);
 
         value = true;
         edgeDetector.update();
         value = true;
-        Assert.assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FLAT);
+        assertEquals(edgeDetector.getEdge(), EdgeDetector.EdgeType.FLAT);
     }
 
     /**
@@ -48,22 +50,22 @@ public class EdgeDetectorTest  {
         value = false;
         edgeDetector.update();
         value = true;
-        Assert.assertFalse(edgeDetector.falling());
+        assertFalse(edgeDetector.falling());
 
         value = true;
         edgeDetector.update();
         value = false;
-        Assert.assertTrue(edgeDetector.falling());
+        assertTrue(edgeDetector.falling());
 
         value = false;
         edgeDetector.update();
         value = false;
-        Assert.assertFalse(edgeDetector.falling());
+        assertFalse(edgeDetector.falling());
 
         value = true;
         edgeDetector.update();
         value = true;
-        Assert.assertFalse(edgeDetector.falling());
+        assertFalse(edgeDetector.falling());
     }
 
     /**
@@ -74,22 +76,22 @@ public class EdgeDetectorTest  {
         value = false;
         edgeDetector.update();
         value = true;
-        Assert.assertTrue(edgeDetector.rising());
+        assertTrue(edgeDetector.rising());
 
         value = true;
         edgeDetector.update();
         value = false;
-        Assert.assertFalse(edgeDetector.rising());
+        assertFalse(edgeDetector.rising());
 
         value = false;
         edgeDetector.update();
         value = false;
-        Assert.assertFalse(edgeDetector.rising());
+        assertFalse(edgeDetector.rising());
 
         value = true;
         edgeDetector.update();
         value = true;
-        Assert.assertFalse(edgeDetector.rising());
+        assertFalse(edgeDetector.rising());
     }
 
     /**
@@ -101,21 +103,21 @@ public class EdgeDetectorTest  {
         value = false;
         edgeDetector.update();
         value = true;
-        Assert.assertFalse(edgeDetector.flatlining());
+        assertFalse(edgeDetector.flatlining());
 
         value = true;
         edgeDetector.update();
         value = false;
-        Assert.assertFalse(edgeDetector.flatlining());
+        assertFalse(edgeDetector.flatlining());
 
         value = false;
         edgeDetector.update();
         value = false;
-        Assert.assertTrue(edgeDetector.flatlining());
+        assertTrue(edgeDetector.flatlining());
 
         value = true;
         edgeDetector.update();
         value = true;
-        Assert.assertTrue(edgeDetector.flatlining());
+        assertTrue(edgeDetector.flatlining());
     }
 }

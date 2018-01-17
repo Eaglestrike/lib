@@ -2,6 +2,8 @@ package org.team114.lib.pathgenerator;
 
 import org.junit.*;
 
+import static org.junit.Assert.*;
+
 public class PolynomialSplineTest {
 
     @Test
@@ -14,30 +16,30 @@ public class PolynomialSplineTest {
             p.at(0.5);
             p.at(1);
         } catch (Exception e) {
-            Assert.fail();
+            fail();
         }
 
         try {
             p.at(-0.1);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.at(1.1);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.at(5);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.at(-5);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
@@ -47,30 +49,30 @@ public class PolynomialSplineTest {
             p.dfdt(0.5);
             p.dfdt(1);
         } catch (Exception e) {
-            Assert.fail();
+            fail();
         }
 
         try {
             p.dfdt(-0.1);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(1.1);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(5);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
 
         try {
             p.dfdt(-5);
-            Assert.fail();
+            fail();
         } catch (Exception e) {
         }
     }

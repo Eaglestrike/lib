@@ -2,6 +2,8 @@ package org.team114.lib.util;
 
 import org.junit.*;
 
+import static org.junit.Assert.*;
+
 public class EpsilonTest {
     @Test
     public void testEpsilonEqualsNearZero() {
@@ -32,26 +34,26 @@ public class EpsilonTest {
 
 
     public void generalEpsilonTest(double start) {
-        Assert.assertTrue(Epsilon.epsilonEquals(start, start)); //reflexive
+        assertTrue(Epsilon.epsilonEquals(start, start)); //reflexive
 
-        Assert.assertFalse(Epsilon.epsilonEquals(start, start + 1)); //converse reflexive
-        Assert.assertFalse(Epsilon.epsilonEquals(start + 1, start));
-        Assert.assertFalse(Epsilon.epsilonEquals(start, start - 1));
-        Assert.assertFalse(Epsilon.epsilonEquals(start - 1, start));
+        assertFalse(Epsilon.epsilonEquals(start, start + 1)); //converse reflexive
+        assertFalse(Epsilon.epsilonEquals(start + 1, start));
+        assertFalse(Epsilon.epsilonEquals(start, start - 1));
+        assertFalse(Epsilon.epsilonEquals(start - 1, start));
 
-        Assert.assertTrue(Epsilon.epsilonEquals(start + 1e-20, start)); //reflexive
-        Assert.assertTrue(Epsilon.epsilonEquals(start - 1e-20, start));
-        Assert.assertTrue(Epsilon.epsilonEquals(start, start + 1e-20));
-        Assert.assertTrue(Epsilon.epsilonEquals(start, start - 1e-20));
+        assertTrue(Epsilon.epsilonEquals(start + 1e-20, start)); //reflexive
+        assertTrue(Epsilon.epsilonEquals(start - 1e-20, start));
+        assertTrue(Epsilon.epsilonEquals(start, start + 1e-20));
+        assertTrue(Epsilon.epsilonEquals(start, start - 1e-20));
 
-        Assert.assertTrue(Epsilon.epsilonEquals(start, start + 1, 1.1));
-        Assert.assertTrue(Epsilon.epsilonEquals(start + 1, start, 1.1)); //select epsilon
-        Assert.assertTrue(Epsilon.epsilonEquals(start, start - 1, 1.1));
-        Assert.assertTrue(Epsilon.epsilonEquals(start - 1, start, 1.1));
+        assertTrue(Epsilon.epsilonEquals(start, start + 1, 1.1));
+        assertTrue(Epsilon.epsilonEquals(start + 1, start, 1.1)); //select epsilon
+        assertTrue(Epsilon.epsilonEquals(start, start - 1, 1.1));
+        assertTrue(Epsilon.epsilonEquals(start - 1, start, 1.1));
 
-        Assert.assertFalse(Epsilon.epsilonEquals(start, start + 1, 0.99));
-        Assert.assertFalse(Epsilon.epsilonEquals(start + 1, start, 0.99)); //select epsilon
-        Assert.assertFalse(Epsilon.epsilonEquals(start, start - 1, 0.99));
-        Assert.assertFalse(Epsilon.epsilonEquals(start - 1, start, 0.99));
+        assertFalse(Epsilon.epsilonEquals(start, start + 1, 0.99));
+        assertFalse(Epsilon.epsilonEquals(start + 1, start, 0.99)); //select epsilon
+        assertFalse(Epsilon.epsilonEquals(start, start - 1, 0.99));
+        assertFalse(Epsilon.epsilonEquals(start - 1, start, 0.99));
     }
 }
