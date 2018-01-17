@@ -1,7 +1,13 @@
 package org.team114.lib.util;
 
+/**
+ * Checks for approximate equality.
+ */
 public class Epsilon {
-    public static double EPSILON = 1e-6;
+    /**
+     * Default "close enough" distance. Currently {@value}.
+     * */
+    public static final double EPSILON = 1e-6;
 
     /**
      * Compare if two doubles are close enough to equal.
@@ -14,6 +20,13 @@ public class Epsilon {
         return Math.abs(a-b) < epsilon;
     }
 
+    /**
+     * Compare if two doubles are close enough to equal, using {@link #EPSILON} as the maximum distance they can
+     * be apart.
+     * @param a the first double
+     * @param b the second double
+     * @return true if they are "equal" false if not
+     */
     public static boolean epsilonEquals(double a, double b) {
         return epsilonEquals(a, b, EPSILON);
     }

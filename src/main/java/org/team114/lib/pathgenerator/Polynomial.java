@@ -9,7 +9,14 @@ import java.util.Arrays;
  *  differentiation.
  */
 public class Polynomial {
+    /**
+     * The degree of the polynomial. For instance, if the largest term is 5x^8, this will be
+     * 8.
+     */
     protected int degree;
+    /**
+     * The coefficients of the polynomial expression.
+     */
     protected double[] coefficients;
 
 
@@ -30,7 +37,7 @@ public class Polynomial {
 
     /**
      * Construct a polynomial, copying the array.
-     * @param a The array of coefficients to use; each term in the polynomial is a[i]*x^i.
+     * @param a The array of coefficients to use; each term in the polynomial is a[i] * x^i.
      */
     protected Polynomial(double[] a) {
         this(a, true);
@@ -81,7 +88,11 @@ public class Polynomial {
         }
         return new Polynomial(g);
     }
-    
+
+    /**
+     * Returns the list of coefficients.
+     * @return a list of the coefficients
+     */
     public double[] getCoefficients() {
         return coefficients.clone();
     }

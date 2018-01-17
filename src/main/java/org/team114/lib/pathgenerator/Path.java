@@ -7,7 +7,6 @@ import org.team114.lib.geometry.Point;
 
 /**
  * An abstract piecewise path section.
- *
  */
 public class Path {
 
